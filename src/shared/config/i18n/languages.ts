@@ -6,5 +6,5 @@ export interface Language {
 export const SUPPORTED_LANGUAGES: Language[] = [
     { code: 'en', name: 'English' },
     { code: 'hi', name: 'Hindi' },
-    { code: 'en-hi', name: 'English + Hindi' },
+    // { code: 'en-hi', name: 'English + Hindi' },
 ];

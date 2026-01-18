@@ -8,7 +8,11 @@ export const theme = createTheme({
             contrastText: '#ffffff',
         },
         secondary: {
-            main: '#2c2c2c', 
+            main: '#2c2c2c',
+        },
+        action: {
+            disabledBackground: 'rgba(255, 109, 0, 0.5)',
+            disabled: 'rgba(255, 255, 255, 0.5)',
         },
         background: {
             default: '#121212',
@@ -38,10 +42,20 @@ export const theme = createTheme({
                     textTransform: 'none',
                     fontWeight: 600,
                     padding: '8px 24px',
+                    boxShadow: 'none',
+                    '&:hover': {
+                        boxShadow: 'none',
+                    },
+                    '&.Mui-disabled': {
+                        backgroundColor: 'rgba(255, 109, 0, 0.3)',
+                        color: 'rgba(255, 255, 255, 0.7)',
+                    },
                 },
                 containedPrimary: {
-                    background: 'linear-gradient(45deg, #ff6d00 30%, #ff9e40 90%)',
-                    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                    backgroundColor: '#ff6d00',
+                    '&:hover': {
+                        backgroundColor: '#e66200',
+                    },
                 },
             },
         },
