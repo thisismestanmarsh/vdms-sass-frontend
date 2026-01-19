@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, Link, Paper, Grid, TextField, MenuItem, Button } from '@mui/material';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { getHubDetailsPath, getHubsTabPath } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CheckIcon from '@mui/icons-material/Check';
 
 export const CreateHubPage = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
   const isEdit = location.pathname.includes('/edit');
 
@@ -51,7 +52,7 @@ export const CreateHubPage = () => {
       <Box>
         <Link
           component="button"
-          onClick={() => navigate('/hubs')}
+          onClick={() => navigate(getHubsTabPath('hubs'))}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -205,6 +206,13 @@ export const CreateHubPage = () => {
             px: 3,
             py: 1,
             transition: 'background-color 0.3s',
+          }}
+          onClick={() => {
+            if (isEdit) {
+              navigate(getHubDetailsPath(id!));
+            } else {
+              navigate(getHubsTabPath('hubs'));
+            }
           }}
         >
           {isEdit ? 'Save Changes' : 'Create Hub'}

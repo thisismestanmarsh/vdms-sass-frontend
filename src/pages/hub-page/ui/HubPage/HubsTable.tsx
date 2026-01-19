@@ -16,6 +16,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
 import { useNavigate } from 'react-router-dom';
+import { getHubDetailsPath } from '@shared/config/routes';
 
 interface Hub {
   id: string;
@@ -155,7 +156,7 @@ export const HubsTable = () => {
               <TableRow
                 key={hub.id}
                 hover
-                onClick={() => navigate(`/hubs/${hub.id}`)}
+                onClick={() => navigate(getHubDetailsPath(hub.id))}
                 sx={{
                   cursor: 'pointer',
                   '&:hover .location-actions': { visibility: 'visible' },
@@ -194,7 +195,8 @@ export const HubsTable = () => {
                         size="small"
                         sx={{ color: 'text.secondary' }}
                         onClick={(e) => {
-                          e.stopPropagation(); /* handle copy */
+                          e.stopPropagation();
+                          navigator.clipboard.writeText(hub.location);
                         }}
                       >
                         <ContentCopyIcon fontSize="small" />

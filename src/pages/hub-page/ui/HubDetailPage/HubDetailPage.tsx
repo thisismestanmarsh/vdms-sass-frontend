@@ -1,5 +1,6 @@
 import { Box, Typography, Link, Paper, Grid, Button, Switch } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import { getHubsTabPath, getHubEditPath } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -24,7 +25,7 @@ export const HubDetailPage = () => {
         <Box>
           <Link
             component="button"
-            onClick={() => navigate('/hubs')}
+            onClick={() => navigate(getHubsTabPath('hubs'))}
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -65,7 +66,7 @@ export const HubDetailPage = () => {
           <Button
             variant="contained"
             startIcon={<EditIcon />}
-            onClick={() => navigate(`/hubs/${hub.id}/edit`)}
+            onClick={() => navigate(getHubEditPath(hub.id))}
             sx={{
               textTransform: 'none',
               borderRadius: 2,
