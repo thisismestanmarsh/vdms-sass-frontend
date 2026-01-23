@@ -9,52 +9,37 @@ import {
     Box,
     Pagination,
     Chip,
+    Typography,
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useNavigate } from 'react-router-dom';
 import { getZoneDetailsPath } from '@shared/config/routes';
 
-interface Zone {
-    zone_id: string;
-    zone_name: string;
-    country: string;
-    type: string;
-    city_names: string[];
-}
-
-const dummyZones: Zone[] = [
-    {
-        zone_id: 'ZN001',
-        zone_name: 'North Zone',
-        country: 'India',
-        type: 'Urban',
-        city_names: ['Delhi', 'Gurugram', 'Noida'],
-    },
-    {
-        zone_id: 'ZN002',
-        zone_name: 'South Zone',
-        country: 'India',
-        type: 'Coastal',
-        city_names: ['Bangalore', 'Chennai', 'Hyderabad'],
-    },
-    {
-        zone_id: 'ZN003',
-        zone_name: 'West Zone',
-        country: 'India',
-        type: 'Industrial',
-        city_names: ['Mumbai', 'Pune', 'Ahmedabad'],
-    },
-    {
-        zone_id: 'ZN004',
-        zone_name: 'East Zone',
-        country: 'India',
-        type: 'Rural',
-        city_names: ['Kolkata', 'Bhubaneswar', 'Guwahati'],
-    },
-];
+import { useZones } from '@entities/zone/model/zoneHooks';
+import type { Zone } from '@entities/zone/model/types';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const ZonesTable = () => {
     const navigate = useNavigate();
+    const { data: zones, isLoading, error } = useZones();
+
+    if (isLoading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                <Typography color="error">Error loading zones</Typography>
+            </Box>
+        );
+    }
+
+    const zonesList = zones?.data || [];
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -94,14 +79,15 @@ export const ZonesTable = () => {
                                 </Box>
                             </TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>City Names</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }}>Hubs</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {dummyZones.map((zone) => (
+                        {zonesList.map((zone: Zone) => (
                             <TableRow
                                 key={zone.zone_id}
                                 hover
-                                onClick={() => navigate(getZoneDetailsPath(zone.zone_id))}
+                                onClick={() => navigate(getZoneDetailsPath(zone.zone_id.toString()))}
                                 sx={{
                                     cursor: 'pointer',
                                     '&:last-child td, &:last-child th': { border: 0 },
@@ -113,7 +99,7 @@ export const ZonesTable = () => {
                                 <TableCell>{zone.type}</TableCell>
                                 <TableCell>
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                        {zone.city_names.map((city) => (
+                                        {zone.city_names.map((city: string) => (
                                             <Chip
                                                 key={city}
                                                 label={city}
@@ -126,6 +112,14 @@ export const ZonesTable = () => {
                                             />
                                         ))}
                                     </Box>
+                                </TableCell>
+                                <TableCell>
+                                    <Chip
+                                        label={`${zone.hubs?.length || 0} Hubs`}
+                                        size="small"
+                                        variant="outlined"
+                                        sx={{ borderColor: 'divider' }}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}

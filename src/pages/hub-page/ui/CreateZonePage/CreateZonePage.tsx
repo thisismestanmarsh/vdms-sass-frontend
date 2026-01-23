@@ -12,11 +12,14 @@ import {
     Chip,
 } from '@mui/material';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { getZoneDetailsPath, getHubsTabPath } from '@shared/config/routes';
+import { getHubsTabPath } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CheckIcon from '@mui/icons-material/Check';
 
 const CITY_OPTIONS = ['Delhi', 'Gurugram', 'Noida', 'Mumbai', 'Pune', 'Bangalore', 'Chennai', 'Hyderabad'];
+
+import { useZone, useCreateZone, useUpdateZone } from '@entities/zone/model/zoneHooks';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const CreateZonePage = () => {
     const navigate = useNavigate();
@@ -24,8 +27,12 @@ export const CreateZonePage = () => {
     const location = useLocation();
     const isEdit = location.pathname.includes('/edit');
 
+    const { data: zoneData, isLoading: isFetching } = useZone(id);
+    const createMutation = useCreateZone();
+    const updateMutation = useUpdateZone(id || '');
+
     const [formData, setFormData] = useState({
-        zone_id: '',
+        zone_id: 0,
         zone_name: '',
         country: '',
         type: '',
@@ -33,17 +40,17 @@ export const CreateZonePage = () => {
     });
 
     useEffect(() => {
-        if (isEdit) {
-            // Simulated prefill for edit mode
+        if (isEdit && zoneData?.data) {
+            const data = zoneData.data;
             setFormData({
-                zone_id: id || 'ZN001',
-                zone_name: 'North Zone',
-                country: 'India',
-                type: 'Urban',
-                city_names: ['Delhi', 'Gurugram'],
+                zone_id: data.zone_id,
+                zone_name: data.zone_name,
+                country: data.country,
+                type: data.type,
+                city_names: data.city_names,
             });
         }
-    }, [isEdit, id]);
+    }, [isEdit, zoneData]);
 
     const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData((prev) => ({ ...prev, [field]: e.target.value }));
@@ -59,6 +66,30 @@ export const CreateZonePage = () => {
         formData.type &&
         formData.city_names.length > 0
     );
+
+    const handleSubmit = async () => {
+        if (isEdit) {
+            updateMutation.mutate(formData, {
+                onSuccess: () => {
+                    navigate(getHubsTabPath('zones'));
+                },
+            });
+        } else {
+            createMutation.mutate(formData, {
+                onSuccess: () => {
+                    navigate(getHubsTabPath('zones'));
+                },
+            });
+        }
+    };
+
+    if (isEdit && isFetching) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -140,6 +171,20 @@ export const CreateZonePage = () => {
                         />
                     </Grid>
 
+                    {isEdit && zoneData?.data?.hubs && (
+                        <Grid size={{ xs: 12, md: 4 }}>
+                            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                                Hubs Count
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                value={zoneData.data.hubs.length}
+                                disabled
+                            />
+                        </Grid>
+                    )}
+
                     <Grid size={{ xs: 12, md: 12 }}>
                         <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
                             City Names
@@ -178,8 +223,8 @@ export const CreateZonePage = () => {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
                 <Button
                     variant="contained"
-                    startIcon={<CheckIcon />}
-                    disabled={!isFormValid}
+                    startIcon={createMutation.isPending || updateMutation.isPending ? <CircularProgress size={20} color="inherit" /> : <CheckIcon />}
+                    disabled={!isFormValid || createMutation.isPending || updateMutation.isPending}
                     sx={{
                         bgcolor: isFormValid ? 'primary.main' : 'rgba(255, 255, 255, 0.1)',
                         color: isFormValid ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
@@ -196,13 +241,7 @@ export const CreateZonePage = () => {
                         py: 1,
                         transition: 'background-color 0.3s',
                     }}
-                    onClick={() => {
-                        if (isEdit) {
-                            navigate(getZoneDetailsPath(id!));
-                        } else {
-                            navigate(getHubsTabPath('zones'));
-                        }
-                    }}
+                    onClick={handleSubmit}
                 >
                     {isEdit ? 'Save Changes' : 'Create Zone'}
                 </Button>

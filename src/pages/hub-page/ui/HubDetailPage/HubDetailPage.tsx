@@ -3,21 +3,31 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getHubsTabPath, getHubEditPath } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EditIcon from '@mui/icons-material/Edit';
+import { useHub } from '@entities/zone/model/zoneHooks';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const HubDetailPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { zoneId, hubId } = useParams();
+  const { data, isLoading, error } = useHub(zoneId, hubId);
 
-  // Mock data based on ID or default
-  const hub = {
-    id: id || 'HB0023',
-    name: 'Hub Name',
-    type: 'Parking Hub',
-    country: 'India',
-    zone: 'APAC',
-    address: 'Random line 1, Sector 42, Gurugram',
-    status: true,
-  };
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error || !data?.data) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+        <Typography color="error">Error loading hub details</Typography>
+      </Box>
+    );
+  }
+
+  const hub = data.data;
 
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -40,14 +50,14 @@ export const HubDetailPage = () => {
             <ArrowBackIosIcon sx={{ fontSize: '0.75rem' }} /> Go back
           </Link>
           <Typography variant="h4" sx={{ fontWeight: 600, mb: 0.5 }}>
-            {hub.name}
+            {hub.hub_name}
           </Typography>
           <Typography
             variant="body2"
             sx={{ color: 'text.secondary', display: 'flex', alignItems: 'center', gap: 1 }}
           >
             <Box component="span" sx={{ fontWeight: 600 }}>
-              #{hub.id}
+              #{hub.hub_id}
             </Box>
             <Box component="span" sx={{ color: 'divider' }}>
               |
@@ -61,12 +71,12 @@ export const HubDetailPage = () => {
             <Typography variant="body2" sx={{ fontWeight: 500 }}>
               Status
             </Typography>
-            <Switch defaultChecked={hub.status} color="primary" size="small" />
+            <Switch checked={hub.status === 'Active'} color="primary" size="small" />
           </Box>
           <Button
             variant="contained"
             startIcon={<EditIcon />}
-            onClick={() => navigate(getHubEditPath(hub.id))}
+            onClick={() => navigate(getHubEditPath(zoneId!, hub.hub_id))}
             sx={{
               textTransform: 'none',
               borderRadius: 2,
@@ -121,10 +131,10 @@ export const HubDetailPage = () => {
                   display: 'block',
                 }}
               >
-                Country
+                Latitude
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                {hub.country}
+                {hub.lat}
               </Typography>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -138,10 +148,10 @@ export const HubDetailPage = () => {
                   display: 'block',
                 }}
               >
-                Zone
+                Longitude
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                {hub.zone}
+                {hub.lng}
               </Typography>
             </Grid>
           </Grid>

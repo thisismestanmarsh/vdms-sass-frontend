@@ -1,22 +1,49 @@
-import { Box, Typography, Link, Paper, Grid, Button, Switch, Chip } from '@mui/material';
+import {
+    Box,
+    Typography,
+    Link,
+    Paper,
+    Grid,
+    Button,
+    Switch,
+    Chip,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+} from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getHubsTabPath, getZoneEditPath } from '@shared/config/routes';
+import { getHubsTabPath, getZoneEditPath, getHubDetailsPath } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import EditIcon from '@mui/icons-material/Edit';
+
+import { useZone } from '@entities/zone/model/zoneHooks';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const ZoneDetailPage = () => {
     const navigate = useNavigate();
     const { id } = useParams();
+    const { data, isLoading, error } = useZone(id);
 
-    // Mock data based on ID or default
-    const zone = {
-        zone_id: id || 'ZN001',
-        zone_name: 'North Zone',
-        country: 'India',
-        type: 'Urban',
-        city_names: ['Delhi', 'Gurugram', 'Noida'],
-        status: true,
-    };
+    if (isLoading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error || !data?.data) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                <Typography color="error">Error loading zone details</Typography>
+            </Box>
+        );
+    }
+
+    const zone = data.data;
 
     return (
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -60,12 +87,12 @@ export const ZoneDetailPage = () => {
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
                             Status
                         </Typography>
-                        <Switch defaultChecked={zone.status} color="primary" size="small" />
+                        <Switch defaultChecked={true} color="primary" size="small" />
                     </Box>
                     <Button
                         variant="contained"
                         startIcon={<EditIcon />}
-                        onClick={() => navigate(getZoneEditPath(zone.zone_id))}
+                        onClick={() => navigate(getZoneEditPath(zone.zone_id.toString()))}
                         sx={{
                             textTransform: 'none',
                             borderRadius: 2,
@@ -157,6 +184,59 @@ export const ZoneDetailPage = () => {
                     </Grid>
                 </Paper>
             </Box>
+
+            {zone.hubs && zone.hubs.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                        Hubs in this Zone
+                    </Typography>
+                    <TableContainer
+                        component={Paper}
+                        sx={{
+                            bgcolor: 'background.paper',
+                            borderRadius: 2,
+                            boxShadow: 'none',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                        }}
+                    >
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Hub ID</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Hub Name</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Type</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Address</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {zone.hubs.map((hub) => (
+                                    <TableRow
+                                        key={hub.hub_id}
+                                        hover
+                                        onClick={() => navigate(getHubDetailsPath(zone.zone_id, hub.hub_id))}
+                                        sx={{ cursor: 'pointer' }}
+                                    >
+                                        <TableCell sx={{ color: 'primary.main', fontWeight: 600 }}>{hub.hub_id}</TableCell>
+                                        <TableCell>{hub.hub_name}</TableCell>
+                                        <TableCell>{hub.type}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={hub.status}
+                                                size="small"
+                                                color={hub.status === 'Active' ? 'success' : 'default'}
+                                                sx={{ borderRadius: 1 }}
+                                            />
+                                        </TableCell>
+                                        <TableCell>{hub.address}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            )}
         </Box>
     );
 };

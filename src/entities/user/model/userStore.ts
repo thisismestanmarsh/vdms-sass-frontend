@@ -1,19 +1,42 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-interface User {
+export interface User {
   id: string;
-  username: string;
-  role?: string;
+  name: string;
+  email: string;
+  phone: string;
+  roles: string[];
+  tenant_id: string;
+  is_active: boolean;
+  hub_list: number[];
+  zone_ids: number[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  refresh_token: string;
+  expires_at: string;
+  user: User;
 }
 
 interface UserStore {
-  authData?: User;
-  setAuthData: (user: User) => void;
+  authData?: AuthResponse;
+  setAuthData: (data: AuthResponse) => void;
   logout: () => void;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
-  authData: undefined,
-  setAuthData: (user) => set({ authData: user }),
-  logout: () => set({ authData: undefined }),
-}));
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      authData: undefined,
+      setAuthData: (data) => set({ authData: data }),
+      logout: () => set({ authData: undefined }),
+    }),
+    {
+      name: 'auth-storage',
+    }
+  )
+);

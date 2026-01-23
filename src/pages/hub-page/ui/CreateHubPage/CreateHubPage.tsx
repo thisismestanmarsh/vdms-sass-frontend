@@ -1,51 +1,88 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Link, Paper, Grid, TextField, MenuItem, Button } from '@mui/material';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { Box, Typography, Link, Paper, Grid, TextField, MenuItem, Button, CircularProgress } from '@mui/material';
+import { useNavigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { getHubDetailsPath, getHubsTabPath } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CheckIcon from '@mui/icons-material/Check';
+import { useHub, useZones, useCreateHub, useUpdateHub } from '@entities/zone/model/zoneHooks';
 
 export const CreateHubPage = () => {
-  const { id } = useParams();
+  const { zoneId: urlZoneId, hubId } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
   const isEdit = location.pathname.includes('/edit');
 
+  // If coming from ZoneDetailPage, we might have zoneId in query or params
+  const initialZoneId = urlZoneId || searchParams.get('zoneId') || '';
+
+  const { data: zonesData } = useZones();
+  const zones = zonesData?.data || [];
+
+  const { data: hubData, isLoading: isHubLoading } = useHub(urlZoneId || '', hubId || '');
+
   const [formData, setFormData] = useState({
-    country: '',
-    city: '',
-    zone: '',
-    name: '',
+    zone_id: initialZoneId as string | number,
+    hub_name: '',
     type: '',
     address: '',
+    lat: '',
+    lng: '',
+    status: 'Active',
   });
 
   useEffect(() => {
-    if (isEdit) {
-      // Simulated prefill for edit mode
+    if (isEdit && hubData?.data) {
+      const hub = hubData.data;
       setFormData({
-        country: 'India',
-        city: 'Gurugram',
-        zone: 'APAC',
-        name: 'Hub Name',
-        type: 'Parking Hub',
-        address: 'Random line 1, Sector 42, Gurugram',
+        zone_id: urlZoneId || '',
+        hub_name: hub.hub_name,
+        type: hub.type,
+        address: hub.address,
+        lat: hub.lat,
+        lng: hub.lng,
+        status: hub.status,
       });
     }
-  }, [isEdit]);
+  }, [isEdit, hubData, urlZoneId]);
 
-  const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const createHubMutation = useCreateHub(formData.zone_id);
+  const updateHubMutation = useUpdateHub(formData.zone_id, hubId || '');
+
+  const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
   const isFormValid = Boolean(
-    formData.city &&
-    formData.zone &&
-    formData.name &&
+    formData.zone_id &&
+    formData.hub_name &&
     formData.type &&
     formData.address &&
-    (isEdit || formData.country)
+    formData.lat &&
+    formData.lng
   );
+
+  const handleSubmit = async () => {
+    try {
+      if (isEdit) {
+        await updateHubMutation.mutateAsync(formData);
+        navigate(getHubDetailsPath(formData.zone_id, hubId!));
+      } else {
+        await createHubMutation.mutateAsync(formData);
+        navigate(getHubsTabPath('hubs'));
+      }
+    } catch (error) {
+      console.error('Failed to save hub:', error);
+    }
+  };
+
+  if (isEdit && isHubLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -82,45 +119,6 @@ export const CreateHubPage = () => {
         }}
       >
         <Grid container spacing={3}>
-          {!isEdit && (
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                Hub Country
-              </Typography>
-              <TextField
-                select
-                fullWidth
-                size="small"
-                value={formData.country}
-                onChange={handleInputChange('country')}
-                SelectProps={{ displayEmpty: true }}
-              >
-                <MenuItem value="" disabled>
-                  Select hub country
-                </MenuItem>
-                <MenuItem value="India">India</MenuItem>
-              </TextField>
-            </Grid>
-          )}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-              Hub City
-            </Typography>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              value={formData.city}
-              onChange={handleInputChange('city')}
-              disabled={isEdit}
-              SelectProps={{ displayEmpty: true }}
-            >
-              <MenuItem value="" disabled>
-                Select hub city
-              </MenuItem>
-              <MenuItem value="Gurugram">Gurugram</MenuItem>
-            </TextField>
-          </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
               Hub Zone
@@ -129,14 +127,19 @@ export const CreateHubPage = () => {
               select
               fullWidth
               size="small"
-              value={formData.zone}
-              onChange={handleInputChange('zone')}
+              value={formData.zone_id}
+              onChange={handleInputChange('zone_id')}
+              disabled={isEdit || !!initialZoneId}
               SelectProps={{ displayEmpty: true }}
             >
               <MenuItem value="" disabled>
                 Select hub zone
               </MenuItem>
-              <MenuItem value="APAC">APAC</MenuItem>
+              {zones.map((zone) => (
+                <MenuItem key={zone.zone_id} value={zone.zone_id}>
+                  {zone.zone_name}
+                </MenuItem>
+              ))}
             </TextField>
           </Grid>
 
@@ -148,8 +151,8 @@ export const CreateHubPage = () => {
               fullWidth
               size="small"
               placeholder="Enter hub name"
-              value={formData.name}
-              onChange={handleInputChange('name')}
+              value={formData.hub_name}
+              onChange={handleInputChange('hub_name')}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
@@ -169,11 +172,12 @@ export const CreateHubPage = () => {
               </MenuItem>
               <MenuItem value="Parking Hub">Parking Hub</MenuItem>
               <MenuItem value="Charging Hub">Charging Hub</MenuItem>
+              <MenuItem value="Combined Hub">Combined Hub</MenuItem>
             </TextField>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-              Enter Hub Address
+              Hub Address
             </Typography>
             <TextField
               fullWidth
@@ -183,6 +187,45 @@ export const CreateHubPage = () => {
               onChange={handleInputChange('address')}
             />
           </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+              Latitude
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder="e.g. 28.459° N"
+              value={formData.lat}
+              onChange={handleInputChange('lat')}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+              Longitude
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder="e.g. 77.026° E"
+              value={formData.lng}
+              onChange={handleInputChange('lng')}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+              Status
+            </Typography>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              value={formData.status}
+              onChange={handleInputChange('status')}
+            >
+              <MenuItem value="Active">Active</MenuItem>
+              <MenuItem value="Inactive">Inactive</MenuItem>
+            </TextField>
+          </Grid>
         </Grid>
       </Paper>
 
@@ -190,30 +233,14 @@ export const CreateHubPage = () => {
         <Button
           variant="contained"
           startIcon={<CheckIcon />}
-          disabled={!isFormValid}
+          disabled={!isFormValid || createHubMutation.isPending || updateHubMutation.isPending}
           sx={{
-            bgcolor: isFormValid ? 'primary.main' : 'rgba(255, 255, 255, 0.1)',
-            color: isFormValid ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
-            '&:hover': {
-              bgcolor: isFormValid ? 'primary.dark' : 'rgba(255, 255, 255, 0.1)',
-            },
-            '&.Mui-disabled': {
-              bgcolor: 'action.disabledBackground',
-              color: 'action.disabled',
-            },
             borderRadius: 2,
             textTransform: 'none',
             px: 3,
             py: 1,
-            transition: 'background-color 0.3s',
           }}
-          onClick={() => {
-            if (isEdit) {
-              navigate(getHubDetailsPath(id!));
-            } else {
-              navigate(getHubsTabPath('hubs'));
-            }
-          }}
+          onClick={handleSubmit}
         >
           {isEdit ? 'Save Changes' : 'Create Hub'}
         </Button>
