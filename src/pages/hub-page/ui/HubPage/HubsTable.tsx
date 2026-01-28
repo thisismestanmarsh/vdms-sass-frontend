@@ -41,8 +41,8 @@ export const HubsTable = () => {
     );
   }
 
-  const allHubs = (zones?.data || []).flatMap((zone: Zone) =>
-    (zone.hubs || []).map((hub: Hub) => ({
+  const allHubs = (Array.isArray(zones?.data) ? zones.data : (zones?.data as any)?.zones || []).flatMap((zone: Zone) =>
+    (Array.isArray(zone.hubs) ? zone.hubs : []).map((hub: Hub) => ({
       ...hub,
       zone_name: zone.zone_name,
       zone_id: zone.zone_id,
@@ -96,7 +96,7 @@ export const HubsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {allHubs.map((hub) => (
+            {Array.isArray(allHubs) && allHubs.map((hub) => (
               <TableRow
                 key={hub.hub_id}
                 hover

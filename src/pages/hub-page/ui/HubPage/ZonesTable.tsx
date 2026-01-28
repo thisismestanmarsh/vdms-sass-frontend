@@ -39,7 +39,7 @@ export const ZonesTable = () => {
         );
     }
 
-    const zonesList = zones?.data || [];
+    const zonesList = Array.isArray(zones?.data) ? zones.data : (zones?.data as any)?.zones || [];
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -99,7 +99,7 @@ export const ZonesTable = () => {
                                 <TableCell>{zone.type}</TableCell>
                                 <TableCell>
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                        {zone.city_names.map((city: string) => (
+                                        {Array.isArray(zone.city_names) && zone.city_names.map((city: string) => (
                                             <Chip
                                                 key={city}
                                                 label={city}

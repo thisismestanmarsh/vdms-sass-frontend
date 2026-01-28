@@ -6,5 +6,8 @@ export const ENDPOINTS = {
     COMPANY: {
         ZONES: '/company/zones',
         HUBS: '/company/zones/:zoneId/hubs',
+        PERMISSIONS: '/company/permissions',
+        ROLES: '/company/roles',
+        USERS: '/company/users',
     },
 } as const;

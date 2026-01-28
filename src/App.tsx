@@ -4,6 +4,9 @@ import { LoginPage } from '@pages/login-page/ui/LoginPage/LoginPage';
 import { HomePage } from '@pages/home-page';
 import { ProfilePage } from '@pages/profile-page';
 import { HubPage, HubDetailPage, CreateHubPage, CreateZonePage, ZoneDetailPage } from '@pages/hub-page';
+import { PermissionsPage, CreatePermissionPage, EditPermissionPage, PermissionDetailPage } from '@pages/permissions-page';
+import { RolesPage, RoleDetailPage } from '@pages/roles-page';
+import { UsersPage } from '@pages/users-page';
 import { MainLayout } from '@app/providers/layout';
 import { ROUTES } from '@shared/config/routes';
 
@@ -24,6 +27,15 @@ function App() {
         <Route path={ROUTES.ZONE_CREATE} element={<CreateZonePage />} />
         <Route path={ROUTES.ZONE_DETAILS} element={<ZoneDetailPage />} />
         <Route path={ROUTES.ZONE_EDIT} element={<CreateZonePage />} />
+
+        {/* Access Management Routes */}
+        <Route path={ROUTES.PERMISSIONS} element={<PermissionsPage />} />
+        <Route path={ROUTES.PERMISSION_CREATE} element={<CreatePermissionPage />} />
+        <Route path={ROUTES.PERMISSION_EDIT} element={<EditPermissionPage />} />
+        <Route path={ROUTES.PERMISSION_DETAILS} element={<PermissionDetailPage />} />
+        <Route path={ROUTES.ROLES} element={<RolesPage />} />
+        <Route path={ROUTES.ROLE_DETAILS} element={<RoleDetailPage />} />
+        <Route path={ROUTES.USERS} element={<UsersPage />} />
       </Route>
 
       <Route path="/" element={<Navigate to={authData ? ROUTES.HOME : ROUTES.LOGIN} replace />} />

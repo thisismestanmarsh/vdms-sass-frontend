@@ -27,7 +27,9 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        const skipLogout = error.config?.headers?.['X-Skip-Logout'];
+
+        if (error.response?.status === 401 && !skipLogout) {
             useUserStore.getState().logout();
         }
         return Promise.reject(error);
