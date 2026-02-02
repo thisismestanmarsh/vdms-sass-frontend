@@ -51,3 +51,13 @@ export interface ZoneRequest {
     type: string;
     city_names: string[];
 }
+
+export interface FlattenedZoneHub {
+    city_name: string;
+    country: string;
+    hub_id: number;
+    hub_name: string;
+    status: string;
+    zone_id: string;
+    zone_name: string;
+}

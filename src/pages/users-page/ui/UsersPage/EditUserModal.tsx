@@ -74,6 +74,13 @@ export const EditUserModal = ({ open, onClose, userId }: EditUserModalProps) => 
     }));
   };
 
+  const handleDeleteRole = (roleToDelete: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      roles: prev.roles.filter((role) => role !== roleToDelete),
+    }));
+  };
+
   const handleSubmit = () => {
     if (!userId) return;
     updateUserMutation.mutate(formData, {
@@ -118,7 +125,14 @@ export const EditUserModal = ({ open, onClose, userId }: EditUserModalProps) => 
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                     {selected.map((value) => (
-                      <Chip key={value} label={value} />
+                      <Chip
+                        key={value}
+                        label={value}
+                        onDelete={() => handleDeleteRole(value)}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
                     ))}
                   </Box>
                 )}

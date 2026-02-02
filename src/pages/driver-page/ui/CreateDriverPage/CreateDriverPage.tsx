@@ -44,7 +44,7 @@ export const CreateDriverPage = () => {
       sx={{
         border: '1px dashed',
         borderColor: 'divider',
-        borderRadius: 2,
+        borderRadius: '8px',
         p: 2,
         textAlign: 'center',
         cursor: 'pointer',
@@ -347,7 +347,7 @@ export const CreateDriverPage = () => {
         sx={{
           p: 4,
           bgcolor: 'background.paper',
-          borderRadius: 2,
+          borderRadius: '8px',
           boxShadow: 'none',
           border: '1px solid',
           borderColor: 'divider',

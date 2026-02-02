@@ -86,10 +86,10 @@ export const Sidebar = ({ isOpen }: SidebarProps) => {
         <List>
           {[
             { text: 'Home', icon: <HomeIcon />, path: ROUTES.HOME },
-            { text: 'Profile', icon: <PersonIcon />, path: ROUTES.PROFILE },
             { text: 'Hubs', icon: <GridViewIcon />, path: ROUTES.HUBS },
             { text: 'Vehicles', icon: <DirectionsCarIcon />, path: ROUTES.VEHICLES },
             { text: 'Drivers', icon: <PeopleIcon />, path: ROUTES.DRIVERS },
+            { text: 'Profile', icon: <PersonIcon />, path: ROUTES.PROFILE },
           ].map((item) => {
             const active = isSelected(item.path);
             return (

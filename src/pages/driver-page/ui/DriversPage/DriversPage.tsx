@@ -82,7 +82,7 @@ export const DriversPage = () => {
               <Paper
                 sx={{
                   p: 2,
-                  borderRadius: 2,
+                  borderRadius: '8px',
                   bgcolor: 'background.paper',
                   border: '1px solid',
                   borderColor: 'divider',

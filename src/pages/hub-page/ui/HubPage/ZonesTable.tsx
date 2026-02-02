@@ -47,7 +47,7 @@ export const ZonesTable = () => {
         component={Paper}
         sx={{
           bgcolor: 'background.paper',
-          borderRadius: 2,
+          borderRadius: '8px',
           boxShadow: 'none',
           border: '1px solid',
           borderColor: 'divider',

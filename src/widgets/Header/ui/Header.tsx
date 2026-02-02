@@ -139,7 +139,7 @@ export const Header = ({ onMenuToggle }: HeaderProps) => {
             sx={{
               textTransform: 'none',
               fontWeight: 600,
-              borderRadius: 2,
+              borderRadius: '8px',
               px: 3,
             }}
           >

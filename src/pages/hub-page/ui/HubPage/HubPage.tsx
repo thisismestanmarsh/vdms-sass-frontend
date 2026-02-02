@@ -45,7 +45,7 @@ export const HubPage = () => {
             width: 350,
             '& .MuiOutlinedInput-root': {
               bgcolor: 'background.paper',
-              borderRadius: 2,
+              borderRadius: '8px',
             },
             cursor: 'pointer',
           }}
@@ -64,7 +64,7 @@ export const HubPage = () => {
           sx={{
             bgcolor: 'primary.main',
             '&:hover': { bgcolor: 'primary.dark' },
-            borderRadius: 2,
+            borderRadius: '8px',
             textTransform: 'none',
           }}
         >

@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Link, Paper, Grid, TextField, MenuItem, Button, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Link,
+  Paper,
+  Grid,
+  TextField,
+  MenuItem,
+  Button,
+  CircularProgress,
+} from '@mui/material';
 import { useNavigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { getHubDetailsPath, getHubsTabPath } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -49,9 +59,10 @@ export const CreateHubPage = () => {
   const createHubMutation = useCreateHub(formData.zone_id);
   const updateHubMutation = useUpdateHub(formData.zone_id, hubId || '');
 
-  const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-  };
+  const handleInputChange =
+    (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    };
 
   const isFormValid = Boolean(
     formData.zone_id &&
@@ -112,7 +123,7 @@ export const CreateHubPage = () => {
         sx={{
           p: 3,
           bgcolor: 'background.paper',
-          borderRadius: 2,
+          borderRadius: '8px',
           boxShadow: 'none',
           border: '1px solid',
           borderColor: 'divider',
@@ -235,7 +246,7 @@ export const CreateHubPage = () => {
           startIcon={<CheckIcon />}
           disabled={!isFormValid || createHubMutation.isPending || updateHubMutation.isPending}
           sx={{
-            borderRadius: 2,
+            borderRadius: '8px',
             textTransform: 'none',
             px: 3,
             py: 1,

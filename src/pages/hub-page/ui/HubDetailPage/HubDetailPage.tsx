@@ -79,7 +79,7 @@ export const HubDetailPage = () => {
             onClick={() => navigate(getHubEditPath(zoneId!, hub.hub_id))}
             sx={{
               textTransform: 'none',
-              borderRadius: 2,
+              borderRadius: '8px',
               px: 3,
             }}
           >
@@ -96,7 +96,7 @@ export const HubDetailPage = () => {
           sx={{
             p: 3,
             bgcolor: 'background.paper',
-            borderRadius: 2,
+            borderRadius: '8px',
             boxShadow: 'none',
             border: '1px solid',
             borderColor: 'divider',

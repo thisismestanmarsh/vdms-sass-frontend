@@ -85,13 +85,13 @@ export const DriversTable = () => {
       component={Paper}
       sx={{
         bgcolor: 'background.paper',
-        borderRadius: 2,
+        borderRadius: '8px',
         boxShadow: 'none',
         border: '1px solid',
         borderColor: 'divider',
       }}
     >
-      <Table>
+      <Table stickyHeader>
         <TableHead sx={{ bgcolor: 'rgba(255, 255, 255, 0.05)' }}>
           <TableRow>
             <TableCell sx={{ fontWeight: 600 }}>Driver ID</TableCell>

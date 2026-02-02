@@ -1,6 +1,6 @@
 import { api } from '@shared/api/apiClient';
 import { ENDPOINTS } from '@shared/api/endpoints';
-import type { Zone, ZoneRequest, ApiResponse, Hub, HubRequest } from '../model/types';
+import type { Zone, ZoneRequest, ApiResponse, Hub, HubRequest, FlattenedZoneHub } from '../model/types';
 
 export const zoneApi = {
     getZones: () => api.get<ApiResponse<Zone[]>>(ENDPOINTS.COMPANY.ZONES),
@@ -20,4 +20,7 @@ export const zoneApi = {
 
     updateHub: (zoneId: string | number, hubId: string | number, data: HubRequest) =>
         api.put<ApiResponse<Hub>>(`${ENDPOINTS.COMPANY.ZONES}/${zoneId}/hubs/${hubId}`, data),
+
+    getFlattenedZones: (params?: { page?: number; limit?: number }) =>
+        api.get<ApiResponse<FlattenedZoneHub[]>>(ENDPOINTS.COMPANY.ZONES_FLATTENED, { params }),
 };

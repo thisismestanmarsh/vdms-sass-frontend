@@ -95,7 +95,7 @@ export const ZoneDetailPage = () => {
             onClick={() => navigate(getZoneEditPath(zone.zone_id.toString()))}
             sx={{
               textTransform: 'none',
-              borderRadius: 2,
+              borderRadius: '8px',
               px: 3,
             }}
           >
@@ -112,7 +112,7 @@ export const ZoneDetailPage = () => {
           sx={{
             p: 3,
             bgcolor: 'background.paper',
-            borderRadius: 2,
+            borderRadius: '8px',
             boxShadow: 'none',
             border: '1px solid',
             borderColor: 'divider',
@@ -194,7 +194,7 @@ export const ZoneDetailPage = () => {
             component={Paper}
             sx={{
               bgcolor: 'background.paper',
-              borderRadius: 2,
+              borderRadius: '8px',
               boxShadow: 'none',
               border: '1px solid',
               borderColor: 'divider',

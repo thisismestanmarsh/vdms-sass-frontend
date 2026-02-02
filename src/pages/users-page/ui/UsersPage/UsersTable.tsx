@@ -12,6 +12,12 @@ import {
   Pagination,
   CircularProgress,
   Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -32,14 +38,32 @@ export const UsersTable = ({ onEdit }: UsersTableProps) => {
   const { data, isLoading, error } = useUsers({ limit, offset });
   const deleteUserMutation = useDeleteUser();
 
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | number | null>(null);
+
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
-  const handleDelete = (id: string | number) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteUserMutation.mutate(id);
+  const handleDeleteClick = (id: string | number) => {
+    setUserToDelete(id);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (userToDelete) {
+      deleteUserMutation.mutate(userToDelete, {
+        onSuccess: () => {
+          setDeleteConfirmationOpen(false);
+          setUserToDelete(null);
+        },
+      });
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmationOpen(false);
+    setUserToDelete(null);
   };
 
   if (isLoading) {
@@ -67,7 +91,7 @@ export const UsersTable = ({ onEdit }: UsersTableProps) => {
         component={Paper}
         sx={{
           bgcolor: 'background.paper',
-          borderRadius: 2,
+          borderRadius: '8px',
           boxShadow: 'none',
           border: '1px solid',
           borderColor: 'divider',
@@ -128,7 +152,11 @@ export const UsersTable = ({ onEdit }: UsersTableProps) => {
                     <IconButton onClick={() => onEdit(user.id)} color="primary" size="small">
                       <EditIcon fontSize="small" />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(user.id)} color="error" size="small">
+                    <IconButton
+                      onClick={() => handleDeleteClick(user.id)}
+                      color="error"
+                      size="small"
+                    >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </TableCell>
@@ -156,6 +184,28 @@ export const UsersTable = ({ onEdit }: UsersTableProps) => {
           color="primary"
         />
       </Box>
+
+      <Dialog
+        open={deleteConfirmationOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Delete User</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this user? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

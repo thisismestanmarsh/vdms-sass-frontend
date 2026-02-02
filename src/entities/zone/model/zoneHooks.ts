@@ -9,6 +9,14 @@ export const zoneKeys = {
     detail: (id: string | number) => [...zoneKeys.details(), id] as const,
     hubs: (zoneId: string | number) => [...zoneKeys.detail(zoneId), 'hubs'] as const,
     hubDetail: (zoneId: string | number, hubId: string | number) => [...zoneKeys.hubs(zoneId), hubId] as const,
+    flattened: (params?: { page?: number; limit?: number }) => [...zoneKeys.all, 'flattened', params] as const,
+};
+
+export const useFlattenedZones = (params?: { page?: number; limit?: number }) => {
+    return useQuery({
+        queryKey: zoneKeys.flattened(params),
+        queryFn: () => zoneApi.getFlattenedZones(params),
+    });
 };
 
 export const useZones = () => {

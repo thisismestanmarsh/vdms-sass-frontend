@@ -80,7 +80,7 @@ export const RoleDetailPage = () => {
         </Button>
       </Box>
 
-      <Paper sx={{ p: 4, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+      <Paper sx={{ p: 4, borderRadius: '8px', border: '1px solid', borderColor: 'divider' }}>
         <Box
           sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}
         >

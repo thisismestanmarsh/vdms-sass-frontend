@@ -5,6 +5,7 @@ export const ENDPOINTS = {
   },
   COMPANY: {
     ZONES: '/company/zones',
+    ZONES_FLATTENED: '/company/zones/flattened',
     HUBS: '/company/zones/:zoneId/hubs',
     PERMISSIONS: '/company/permissions',
     ROLES: '/company/roles',

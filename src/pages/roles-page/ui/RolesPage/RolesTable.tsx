@@ -59,12 +59,12 @@ export const RolesTable = () => {
       component={Paper}
       sx={{
         bgcolor: 'background.paper',
-        borderRadius: 2,
+        borderRadius: '8px',
         border: '1px solid',
         borderColor: 'divider',
       }}
     >
-      <Table>
+      <Table stickyHeader>
         <TableHead>
           <TableRow>
             <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>

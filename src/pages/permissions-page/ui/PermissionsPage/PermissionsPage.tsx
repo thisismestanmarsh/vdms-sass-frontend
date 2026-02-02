@@ -1,11 +1,11 @@
 import { Container, Typography, Box, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@shared/config/routes';
+import { useState } from 'react';
 import { PermissionsTable } from './PermissionsTable';
+import { CreatePermissionModal } from './CreatePermissionModal';
 
 export const PermissionsPage = () => {
-    const navigate = useNavigate();
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -16,7 +16,7 @@ export const PermissionsPage = () => {
                 <Button
                     variant="contained"
                     startIcon={<AddIcon />}
-                    onClick={() => navigate(ROUTES.PERMISSION_CREATE)}
+                    onClick={() => setIsCreateModalOpen(true)}
                     sx={{
                         borderRadius: '8px',
                         textTransform: 'none',
@@ -27,6 +27,10 @@ export const PermissionsPage = () => {
                 </Button>
             </Box>
             <PermissionsTable />
+            <CreatePermissionModal
+                open={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+            />
         </Container>
     );
 };
