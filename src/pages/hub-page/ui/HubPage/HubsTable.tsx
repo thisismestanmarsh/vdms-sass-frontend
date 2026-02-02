@@ -41,7 +41,9 @@ export const HubsTable = () => {
     );
   }
 
-  const allHubs = (Array.isArray(zones?.data) ? zones.data : (zones?.data as any)?.zones || []).flatMap((zone: Zone) =>
+  const allHubs = (
+    Array.isArray(zones?.data) ? zones.data : (zones?.data as any)?.zones || []
+  ).flatMap((zone: Zone) =>
     (Array.isArray(zone.hubs) ? zone.hubs : []).map((hub: Hub) => ({
       ...hub,
       zone_name: zone.zone_name,
@@ -96,62 +98,65 @@ export const HubsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.isArray(allHubs) && allHubs.map((hub) => (
-              <TableRow
-                key={hub.hub_id}
-                hover
-                onClick={() => navigate(getHubDetailsPath(hub.zone_id, hub.hub_id))}
-                sx={{
-                  cursor: 'pointer',
-                  '&:hover .location-actions': { visibility: 'visible' },
-                  '&:last-child td, &:last-child th': { border: 0 },
-                }}
-              >
-                <TableCell sx={{ color: 'primary.main', fontWeight: 600 }}>{hub.hub_id}</TableCell>
-                <TableCell>{hub.hub_name}</TableCell>
-                <TableCell>{hub.type}</TableCell>
-                <TableCell>{hub.country}</TableCell>
-                <TableCell>{hub.zone_name}</TableCell>
-                <TableCell>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                    }}
-                  >
-                    <Typography variant="body2">{hub.address}</Typography>
+            {Array.isArray(allHubs) &&
+              allHubs.map((hub) => (
+                <TableRow
+                  key={hub.hub_id}
+                  hover
+                  onClick={() => navigate(getHubDetailsPath(hub.zone_id, hub.hub_id))}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover .location-actions': { visibility: 'visible' },
+                    '&:last-child td, &:last-child th': { border: 0 },
+                  }}
+                >
+                  <TableCell sx={{ color: 'primary.main', fontWeight: 600 }}>
+                    {hub.hub_id}
+                  </TableCell>
+                  <TableCell>{hub.hub_name}</TableCell>
+                  <TableCell>{hub.type}</TableCell>
+                  <TableCell>{hub.country}</TableCell>
+                  <TableCell>{hub.zone_name}</TableCell>
+                  <TableCell>
                     <Box
-                      className="location-actions"
-                      sx={{ visibility: 'hidden', display: 'flex' }}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                      }}
                     >
-                      <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={(e) => {
-                          e.stopPropagation(); /* handle location */
-                        }}
+                      <Typography variant="body2">{hub.address}</Typography>
+                      <Box
+                        className="location-actions"
+                        sx={{ visibility: 'hidden', display: 'flex' }}
                       >
-                        <LocationOnIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        sx={{ color: 'text.secondary' }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (hub.address) {
-                            navigator.clipboard.writeText(hub.address);
-                          }
-                        }}
-                      >
-                        <ContentCopyIcon fontSize="small" />
-                      </IconButton>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          onClick={(e) => {
+                            e.stopPropagation(); /* handle location */
+                          }}
+                        >
+                          <LocationOnIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          sx={{ color: 'text.secondary' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (hub.address) {
+                              navigator.clipboard.writeText(hub.address);
+                            }
+                          }}
+                        >
+                          <ContentCopyIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </Box>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
