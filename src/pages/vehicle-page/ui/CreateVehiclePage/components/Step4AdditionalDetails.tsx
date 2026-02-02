@@ -142,6 +142,16 @@ export const Step4AdditionalDetails = ({ control }: Step4AdditionalDetailsProps)
                       </InputAdornment>
                     ),
                   }}
+                  inputProps={{
+                    onClick: (e) => (e.target as HTMLInputElement).showPicker?.(),
+                    style: { cursor: 'pointer' },
+                  }}
+                  sx={{
+                    '& input::-webkit-calendar-picker-indicator': {
+                      display: 'none',
+                      WebkitAppearance: 'none',
+                    },
+                  }}
                 />
               )}
             />
@@ -251,6 +261,16 @@ export const Step4AdditionalDetails = ({ control }: Step4AdditionalDetailsProps)
                       </InputAdornment>
                     ),
                   }}
+                  inputProps={{
+                    onClick: (e) => (e.target as HTMLInputElement).showPicker?.(),
+                    style: { cursor: 'pointer' },
+                  }}
+                  sx={{
+                    '& input::-webkit-calendar-picker-indicator': {
+                      display: 'none',
+                      WebkitAppearance: 'none',
+                    },
+                  }}
                 />
               )}
             />
@@ -276,6 +296,16 @@ export const Step4AdditionalDetails = ({ control }: Step4AdditionalDetailsProps)
                         <CalendarTodayIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
                       </InputAdornment>
                     ),
+                  }}
+                  inputProps={{
+                    onClick: (e) => (e.target as HTMLInputElement).showPicker?.(),
+                    style: { cursor: 'pointer' },
+                  }}
+                  sx={{
+                    '& input::-webkit-calendar-picker-indicator': {
+                      display: 'none',
+                      WebkitAppearance: 'none',
+                    },
                   }}
                 />
               )}
@@ -648,6 +678,16 @@ export const Step4AdditionalDetails = ({ control }: Step4AdditionalDetailsProps)
                       </InputAdornment>
                     ),
                   }}
+                  inputProps={{
+                    onClick: (e) => (e.target as HTMLInputElement).showPicker?.(),
+                    style: { cursor: 'pointer' },
+                  }}
+                  sx={{
+                    '& input::-webkit-calendar-picker-indicator': {
+                      display: 'none',
+                      WebkitAppearance: 'none',
+                    },
+                  }}
                 />
               )}
             />
@@ -721,6 +761,16 @@ export const Step4AdditionalDetails = ({ control }: Step4AdditionalDetailsProps)
                         <CalendarTodayIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
                       </InputAdornment>
                     ),
+                  }}
+                  inputProps={{
+                    onClick: (e) => (e.target as HTMLInputElement).showPicker?.(),
+                    style: { cursor: 'pointer' },
+                  }}
+                  sx={{
+                    '& input::-webkit-calendar-picker-indicator': {
+                      display: 'none',
+                      WebkitAppearance: 'none',
+                    },
                   }}
                 />
               )}

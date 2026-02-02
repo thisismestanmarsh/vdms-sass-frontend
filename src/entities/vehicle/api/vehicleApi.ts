@@ -34,4 +34,12 @@ export const vehicleApi = {
         'Accept-Country': 'IN',
       },
     }),
+
+  deleteVehicle: (id: string | number) =>
+    api.delete<ApiResponse<void>>(`${ENDPOINTS.COMPANY.VEHICLES}/${id}`, {
+      headers: {
+        'Accept-Language': 'en',
+        'Accept-Country': 'IN',
+      },
+    }),
 };

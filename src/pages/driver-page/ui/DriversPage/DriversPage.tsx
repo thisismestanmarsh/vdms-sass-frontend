@@ -7,11 +7,19 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@shared/config/routes';
 import { DriversTable } from '../DriversTable/DriversTable';
 
+interface SummaryCard {
+  label: string;
+  value: string;
+  color: string;
+  subLabel?: string;
+}
+
 export const DriversPage = () => {
   const navigate = useNavigate();
 
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {/* ... header ... */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 600 }}>
@@ -63,11 +71,13 @@ export const DriversPage = () => {
           Drivers Summary
         </Typography>
         <Grid container spacing={2}>
-          {[
-            { label: 'Total Drivers', value: '23', color: '#ff6b00' },
-            { label: 'Drivers Online', value: '20', color: '#00c853' },
-            { label: 'Total Rides', value: '33', color: '#6200ea' },
-          ].map((card, index) => (
+          {(
+            [
+              { label: 'Total Drivers', value: '23', color: '#ff6b00' },
+              { label: 'Drivers Online', value: '20', color: '#00c853' },
+              { label: 'Total Rides', value: '33', color: '#6200ea' },
+            ] as SummaryCard[]
+          ).map((card, index) => (
             <Grid key={index} size={{ xs: 12, md: 4 }}>
               <Paper
                 sx={{

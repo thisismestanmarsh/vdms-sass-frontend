@@ -32,13 +32,17 @@ export const CreateVehiclePage = () => {
 
   useEffect(() => {
     if (vehicleData?.data) {
-      const data = vehicleData.data;
-      const formatDate = (dateStr: string | null) => {
+      const rawData = vehicleData.data;
+      const data = Array.isArray(rawData) ? rawData[0] : rawData;
+
+      if (!data) return;
+
+      const formatDate = (dateStr: string | null | undefined) => {
         if (!dateStr) return '';
         return dateStr.split('T')[0];
       };
 
-      reset({
+      const formattedData = {
         ...data,
         registration_date: formatDate(data.registration_date),
         invoice_date: formatDate(data.invoice_date),
@@ -62,16 +66,30 @@ export const CreateVehiclePage = () => {
           ...data.powertrain_specs,
           ev: data.powertrain_specs?.ev
             ? {
-                ...data.powertrain_specs.ev,
-                battery_soh_date: formatDate(data.powertrain_specs.ev.battery_soh_date),
-              }
+              ...data.powertrain_specs.ev,
+              battery_soh_date: formatDate(data.powertrain_specs.ev.battery_soh_date),
+            }
             : undefined,
         },
         warranties:
-          data.warranties?.map((w) => ({
+          data.warranties?.map((w: any) => ({
             ...w,
             warranty_end_date: formatDate(w.warranty_end_date),
           })) || [],
+      };
+
+      // Helper to match enum values case-insensitively and trim whitespace
+      const matchEnum = (val: string | undefined, options: string[]) => {
+        if (!val) return '';
+        const normalizedVal = val.trim();
+        const match = options.find((opt) => opt.toLowerCase() === normalizedVal.toLowerCase());
+        return match || normalizedVal; // Return match if found, otherwise keep original
+      };
+
+      reset({
+        ...formattedData,
+        type_of_vehicle: matchEnum(data.type_of_vehicle, ['2W', '3W', '4W']),
+        engine_type: matchEnum(data.engine_type, ['EV', 'Petrol', 'Diesel']),
       });
     }
   }, [vehicleData, reset]);
@@ -80,6 +98,10 @@ export const CreateVehiclePage = () => {
 
   const onSubmit = () => {
     const formValues = getValues();
+
+    // Prevent submission if not on the final step
+    // if (step < 4) return;
+
     const payload = buildVehiclePayload(formValues);
 
     if (isEdit && id) {
@@ -104,7 +126,13 @@ export const CreateVehiclePage = () => {
     }
   };
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 4));
+  const nextStep = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setStep((prev) => Math.min(prev + 1, 4));
+  };
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   if (isLoadingVehicle) {
@@ -170,6 +198,8 @@ export const CreateVehiclePage = () => {
 
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
             <Button
+              key="prev-btn"
+              type="button"
               onClick={prevStep}
               disabled={step === 1}
               variant="outlined"
@@ -178,11 +208,18 @@ export const CreateVehiclePage = () => {
               Previous
             </Button>
             {step < 4 ? (
-              <Button onClick={nextStep} variant="contained" sx={{ minWidth: 120 }}>
+              <Button
+                key="next-btn"
+                type="button"
+                onClick={nextStep}
+                variant="contained"
+                sx={{ minWidth: 120 }}
+              >
                 Next
               </Button>
             ) : (
               <Button
+                key="submit-btn"
                 type="submit"
                 variant="contained"
                 disabled={isCreating || isUpdating}

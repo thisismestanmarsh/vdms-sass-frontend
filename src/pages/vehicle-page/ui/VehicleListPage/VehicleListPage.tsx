@@ -19,11 +19,45 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES, getVehicleDetailsPath } from '@shared/config/routes';
-import { useVehicles } from '@entities/vehicle/model/vehicleHooks';
+
+import { useVehicles, useDeleteVehicle } from '@entities/vehicle/model/vehicleHooks';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@mui/material';
 
 export const VehicleListPage = () => {
   const navigate = useNavigate();
   const { data, isLoading, error } = useVehicles(1, 50);
+  const deleteVehicleMutation = useDeleteVehicle();
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [vehicleToDelete, setVehicleToDelete] = useState<string | number | null>(null);
+
+  const handleDeleteClick = (id: string | number) => {
+    setVehicleToDelete(id);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (vehicleToDelete) {
+      deleteVehicleMutation.mutate(vehicleToDelete, {
+        onSuccess: () => {
+          setDeleteConfirmationOpen(false);
+          setVehicleToDelete(null);
+        },
+      });
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmationOpen(false);
+    setVehicleToDelete(null);
+  };
 
   if (isLoading) {
     return (
@@ -139,6 +173,15 @@ export const VehicleListPage = () => {
                           <EditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
+                      <Tooltip title="Delete Vehicle">
+                        <IconButton
+                          size="small"
+                          onClick={() => handleDeleteClick(vehicle.id || '')}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                     </Box>
                   </TableCell>
                 </TableRow>
@@ -147,6 +190,28 @@ export const VehicleListPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog
+        open={deleteConfirmationOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Delete Vehicle</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this vehicle? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
