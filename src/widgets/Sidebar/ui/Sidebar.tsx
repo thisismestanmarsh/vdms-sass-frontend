@@ -17,6 +17,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import SecurityIcon from '@mui/icons-material/Security';
 import PeopleIcon from '@mui/icons-material/People';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ROUTES } from '@shared/config/routes';
 import { useState, useEffect } from 'react';
@@ -87,6 +88,8 @@ export const Sidebar = ({ isOpen }: SidebarProps) => {
             { text: 'Home', icon: <HomeIcon />, path: ROUTES.HOME },
             { text: 'Profile', icon: <PersonIcon />, path: ROUTES.PROFILE },
             { text: 'Hubs', icon: <GridViewIcon />, path: ROUTES.HUBS },
+            { text: 'Vehicles', icon: <DirectionsCarIcon />, path: ROUTES.VEHICLES },
+            { text: 'Drivers', icon: <PeopleIcon />, path: ROUTES.DRIVERS },
           ].map((item) => {
             const active = isSelected(item.path);
             return (
