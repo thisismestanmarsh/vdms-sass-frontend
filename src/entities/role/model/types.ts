@@ -12,6 +12,18 @@ export interface RoleDetail extends Role {
     permissions: Permission[];
 }
 
+export interface CreateRolePermissionRequest {
+    action: string;
+    permissionId: string | number;
+    scope: string;
+}
+
+export interface CreateRoleRequest {
+    name: string;
+    description: string;
+    permissions: CreateRolePermissionRequest[];
+}
+
 export interface RoleRequest {
     name: string;
     description: string;

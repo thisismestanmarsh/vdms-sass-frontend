@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { roleApi } from '../api/roleApi';
+import type { CreateRoleRequest } from './types';
 
 export const useRoles = () => {
     return useQuery({
@@ -20,6 +21,16 @@ export const useDeleteRole = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string | number) => roleApi.deleteRole(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['roles'] });
+        },
+    });
+};
+
+export const useCreateRole = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data: CreateRoleRequest) => roleApi.createRole(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['roles'] });
         },

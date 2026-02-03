@@ -1,6 +1,6 @@
 import { api } from '@shared/api/apiClient';
 import { ENDPOINTS } from '@shared/api/endpoints';
-import type { RoleListResponse, RoleDetailResponse } from '../model/types';
+import type { RoleListResponse, RoleDetailResponse, CreateRoleRequest } from '../model/types';
 
 export const roleApi = {
     getRoles: () => api.get<RoleListResponse>(ENDPOINTS.COMPANY.ROLES),
@@ -10,4 +10,7 @@ export const roleApi = {
 
     deleteRole: (id: number | string) =>
         api.delete(`${ENDPOINTS.COMPANY.ROLES}/${id}`),
+
+    createRole: (data: CreateRoleRequest) =>
+        api.post(ENDPOINTS.COMPANY.ROLES, data),
 };
