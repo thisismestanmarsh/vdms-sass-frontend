@@ -1,30 +1,36 @@
 export interface Driver {
   id: string;
-  name: string;
-  phoneNo: string;
-  alternatePhoneNo?: string;
+  company_id: string;
+  driver_id: string;
+  driver_full_name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  alternate_phone: string;
   address: string;
   city: string;
-  hubs: string[];
-  driverPhoto?: string;
-  driverType: string;
-  drivingSide: string;
-  dlName: string;
-  dlNumber: string;
-  dlExpiryDate: string;
-  dlPhoto?: string;
-  aadhaarNo: string;
-  aadhaarFrontPhoto?: string;
-  aadhaarBackPhoto?: string;
-  status: 'valid' | 'expiring' | 'expired';
-  auctionStatus: 'valid' | 'expiring' | 'expired';
-  driverStatus: 'valid' | 'expiring' | 'expired';
-  createdAt: string;
-  updatedAt: string;
+  hub_id: string;
+  hub_name: string;
+  driver_type: string;
+  driver_status: string;
+  joining_date: string;
+  dl_number: string;
+  dl_expiry_date: string;
+  dl_issue_date: string;
+  dl_photo_front_url?: string;
+  dl_photo_back_url?: string;
+  dl_status: string;
+  license_no: string;
+  license_type: string;
+  aadhaar_number: string;
+  aadhaar_photo_url?: string;
+  aadhaar_status: string;
+  driver_photo_url?: string;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
-export type DriverCreateRequest = Omit<
-  Driver,
-  'id' | 'status' | 'auctionStatus' | 'driverStatus' | 'createdAt' | 'updatedAt'
->;
-export type DriverUpdateRequest = Partial<DriverCreateRequest>;
+export type DriverCreateRequest = Omit<Driver, 'id' | 'company_id' | 'created_at' | 'updated_at'>;
+export type DriverUpdateRequest = Partial<Omit<DriverCreateRequest, 'driver_id'>>;

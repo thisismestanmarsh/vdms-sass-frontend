@@ -1,63 +1,94 @@
 import { useState } from 'react';
-import { Box, Typography, Link, Paper, Grid, TextField, MenuItem, Button } from '@mui/material';
+import { Box, Typography, Link, Paper, Grid, TextField, MenuItem, Button, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { useCreateDriver, useUpdateDriver } from '@entities/driver/model/driverHooks';
+import type { Driver } from '@entities/driver/model/types';
 
-export const CreateDriverPage = () => {
+interface CreateDriverPageProps {
+  initialData?: Driver;
+  isEdit?: boolean;
+}
+
+export const CreateDriverPage = ({ initialData, isEdit }: CreateDriverPageProps) => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const { mutate: createDriver, isPending: isCreating } = useCreateDriver();
+  const { mutate: updateDriver, isPending: isUpdating } = useUpdateDriver(initialData?.id || '');
+
+  const isPending = isCreating || isUpdating;
 
   const [formData, setFormData] = useState({
-    // Step 1: Basic Details & Hub
-    name: '',
-    phoneNo: '',
-    alternatePhoneNo: '',
-    address: '',
-    city: '',
-    hubs: [] as string[],
-    driverType: '',
-    drivingSide: '',
-    driverPhoto: null as File | null,
-    // Step 2: Driving License & Aadhaar
-    dlName: '',
-    dlNumber: '',
-    dlExpiryDate: '',
-    dlPhoto: null as File | null,
-    aadhaarNo: '',
-    aadhaarFrontPhoto: null as File | null,
-    aadhaarBackPhoto: null as File | null,
+    // Basic Details
+    driver_id: initialData?.driver_id || `DRV-${Math.floor(100000 + Math.random() * 900000)}`,
+    first_name: initialData?.first_name || '',
+    last_name: initialData?.last_name || '',
+    driver_full_name: initialData?.driver_full_name || '',
+    email: initialData?.email || '',
+    phone_number: initialData?.phone_number || '',
+    alternate_phone: initialData?.alternate_phone || '',
+    address: initialData?.address || '',
+    city: initialData?.city || '',
+    joining_date: initialData?.joining_date ? initialData.joining_date.split('T')[0] : new Date().toISOString().split('T')[0],
+
+    // Hub
+    hub_id: initialData?.hub_id || '',
+    hub_name: initialData?.hub_name || '',
+
+    // Type & Status
+    driver_type: initialData?.driver_type || 'FULL_TIME',
+    driver_status: initialData?.driver_status || 'ACTIVE',
+    status: initialData?.status || 'ACTIVE',
+
+    // DL & Aadhaar
+    dl_number: initialData?.dl_number || '',
+    dl_expiry_date: initialData?.dl_expiry_date ? initialData.dl_expiry_date.split('T')[0] : '',
+    dl_issue_date: initialData?.dl_issue_date ? initialData.dl_issue_date.split('T')[0] : '',
+    dl_status: initialData?.dl_status || 'VALID',
+    license_no: initialData?.license_no || '',
+    license_type: initialData?.license_type || 'LMV',
+    aadhaar_number: initialData?.aadhaar_number || '',
+    aadhaar_status: initialData?.aadhaar_status || 'VERIFIED',
   });
 
   const handleInputChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+      const value = e.target.value;
+      setFormData((prev) => {
+        const newData = { ...prev, [field]: value };
+        if (field === 'first_name' || field === 'last_name') {
+          newData.driver_full_name = `${newData.first_name} ${newData.last_name}`.trim();
+        }
+        return newData;
+      });
     };
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 2));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
-  const renderFileUpload = (label: string) => (
-    <Box
-      sx={{
-        border: '1px dashed',
-        borderColor: 'divider',
-        borderRadius: '8px',
-        p: 2,
-        textAlign: 'center',
-        cursor: 'pointer',
-        bgcolor: 'rgba(255, 255, 255, 0.02)',
-        '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.05)' },
-      }}
-    >
-      <CloudUploadIcon sx={{ color: 'primary.main', mb: 1 }} />
-      <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 500 }}>
-        Upload {label}
-      </Typography>
-    </Box>
-  );
+  const handleSubmit = () => {
+    // Ensure dates are in ISO format if needed, though the API curl showed T00:00:00Z
+    const payload = {
+      ...formData,
+      dl_expiry_date: formData.dl_expiry_date ? `${formData.dl_expiry_date}T00:00:00Z` : '',
+      dl_issue_date: formData.dl_issue_date ? `${formData.dl_issue_date}T00:00:00Z` : '',
+      joining_date: formData.joining_date ? `${formData.joining_date}T00:00:00Z` : '',
+    };
+
+    const action = isEdit ? updateDriver : createDriver;
+
+    // For update, we might need a different payload if the backend expects it.
+    // The user provided a PUT payload which is similar to the POST one.
+    // I'll use the same payload for both for now.
+
+    action(payload as any, {
+      onSuccess: () => {
+        navigate(ROUTES.DRIVERS);
+      },
+    });
+  };
 
   const renderStep = () => {
     switch (step) {
@@ -66,14 +97,38 @@ export const CreateDriverPage = () => {
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 4 }}>
               <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                Driver Name
+                First Name
               </Typography>
               <TextField
                 fullWidth
                 size="small"
-                placeholder="Enter driver name"
-                value={formData.name}
-                onChange={handleInputChange('name')}
+                placeholder="Enter first name"
+                value={formData.first_name}
+                onChange={handleInputChange('first_name')}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                Last Name
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Enter last name"
+                value={formData.last_name}
+                onChange={handleInputChange('last_name')}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                Email
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Enter email"
+                value={formData.email}
+                onChange={handleInputChange('email')}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -84,8 +139,8 @@ export const CreateDriverPage = () => {
                 fullWidth
                 size="small"
                 placeholder="Enter phone no."
-                value={formData.phoneNo}
-                onChange={handleInputChange('phoneNo')}
+                value={formData.phone_number}
+                onChange={handleInputChange('phone_number')}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -96,11 +151,24 @@ export const CreateDriverPage = () => {
                 fullWidth
                 size="small"
                 placeholder="Enter alternate phone no."
-                value={formData.alternatePhoneNo}
-                onChange={handleInputChange('alternatePhoneNo')}
+                value={formData.alternate_phone}
+                onChange={handleInputChange('alternate_phone')}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
+              <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                Joining Date
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                type="date"
+                value={formData.joining_date}
+                onChange={handleInputChange('joining_date')}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 8 }}>
               <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
                 Address
               </Typography>
@@ -129,32 +197,34 @@ export const CreateDriverPage = () => {
                 </MenuItem>
                 <MenuItem value="Bangalore">Bangalore</MenuItem>
                 <MenuItem value="Delhi">Delhi</MenuItem>
+                <MenuItem value="Gurugram">Gurugram</MenuItem>
               </TextField>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                Hub Assigned
+                Hub
               </Typography>
               <TextField
                 select
                 fullWidth
                 size="small"
-                value={formData.hubs}
-                onChange={handleInputChange('hubs')}
-                SelectProps={{ displayEmpty: true, multiple: true }}
+                value={formData.hub_id}
+                onChange={(e) => {
+                  const hubId = e.target.value;
+                  const hubs: Record<string, string> = {
+                    'HUB-DEL-01': 'Delhi Hub 1',
+                    'HUB-BLR-01': 'Bangalore Hub 1'
+                  };
+                  setFormData(prev => ({ ...prev, hub_id: hubId, hub_name: hubs[hubId] || '' }));
+                }}
+                SelectProps={{ displayEmpty: true }}
               >
                 <MenuItem value="" disabled>
-                  Select Hubs assigned
+                  Select Hub
                 </MenuItem>
-                <MenuItem value="HSR Layout">HSR Layout</MenuItem>
-                <MenuItem value="Indiranagar">Indiranagar</MenuItem>
+                <MenuItem value="HUB-DEL-01">Delhi Hub 1</MenuItem>
+                <MenuItem value="HUB-BLR-01">Bangalore Hub 1</MenuItem>
               </TextField>
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                Driver Photo
-              </Typography>
-              {renderFileUpload('driver file')}
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
@@ -164,34 +234,12 @@ export const CreateDriverPage = () => {
                 select
                 fullWidth
                 size="small"
-                value={formData.driverType}
-                onChange={handleInputChange('driverType')}
-                SelectProps={{ displayEmpty: true }}
+                value={formData.driver_type}
+                onChange={handleInputChange('driver_type')}
               >
-                <MenuItem value="" disabled>
-                  Select driver type
-                </MenuItem>
-                <MenuItem value="Internal">Internal</MenuItem>
-                <MenuItem value="External">External</MenuItem>
-              </TextField>
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                Driving Side
-              </Typography>
-              <TextField
-                select
-                fullWidth
-                size="small"
-                value={formData.drivingSide}
-                onChange={handleInputChange('drivingSide')}
-                SelectProps={{ displayEmpty: true }}
-              >
-                <MenuItem value="" disabled>
-                  Select Driving Side
-                </MenuItem>
-                <MenuItem value="Left">Left</MenuItem>
-                <MenuItem value="Right">Right</MenuItem>
+                <MenuItem value="FULL_TIME">Full Time</MenuItem>
+                <MenuItem value="PART_TIME">Part Time</MenuItem>
+                <MenuItem value="CONTRACTOR">Contractor</MenuItem>
               </TextField>
             </Grid>
           </Grid>
@@ -205,26 +253,27 @@ export const CreateDriverPage = () => {
             <Grid container spacing={3} sx={{ mb: 4 }}>
               <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  DL Name
-                </Typography>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder="Enter name on DL"
-                  value={formData.dlName}
-                  onChange={handleInputChange('dlName')}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
                   DL Number
                 </Typography>
                 <TextField
                   fullWidth
                   size="small"
                   placeholder="Enter DL number"
-                  value={formData.dlNumber}
-                  onChange={handleInputChange('dlNumber')}
+                  value={formData.dl_number}
+                  onChange={handleInputChange('dl_number')}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                  DL Issue Date
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="date"
+                  value={formData.dl_issue_date}
+                  onChange={handleInputChange('dl_issue_date')}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -235,22 +284,22 @@ export const CreateDriverPage = () => {
                   fullWidth
                   size="small"
                   type="date"
-                  value={formData.dlExpiryDate}
-                  onChange={handleInputChange('dlExpiryDate')}
+                  value={formData.dl_expiry_date}
+                  onChange={handleInputChange('dl_expiry_date')}
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  DL Photo
+                  License Type
                 </Typography>
-                {renderFileUpload('DL front pic')}
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  DL Back Photo
-                </Typography>
-                {renderFileUpload('DL back pic')}
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="e.g. LMV, HMV"
+                  value={formData.license_type}
+                  onChange={handleInputChange('license_type')}
+                />
               </Grid>
             </Grid>
 
@@ -260,38 +309,33 @@ export const CreateDriverPage = () => {
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Aadhar NO
+                  Aadhar Number
                 </Typography>
                 <TextField
                   fullWidth
                   size="small"
                   placeholder="Enter Aadhar no."
-                  value={formData.aadhaarNo}
-                  onChange={handleInputChange('aadhaarNo')}
+                  value={formData.aadhaar_number}
+                  onChange={handleInputChange('aadhaar_number')}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Aadhar Front
+                  Aadhar Status
                 </Typography>
-                {renderFileUpload('Aadhar front pic')}
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Aadhar Back
-                </Typography>
-                {renderFileUpload('Aadhar back pic')}
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  value={formData.aadhaar_status}
+                  onChange={handleInputChange('aadhaar_status')}
+                >
+                  <MenuItem value="VERIFIED">Verified</MenuItem>
+                  <MenuItem value="PENDING">Pending</MenuItem>
+                  <MenuItem value="REJECTED">Rejected</MenuItem>
+                </TextField>
               </Grid>
             </Grid>
-          </Box>
-        );
-      case 3:
-        return (
-          <Box sx={{ textAlign: 'center', py: 5 }}>
-            <Typography variant="h6">Review & Submit</Typography>
-            <Typography variant="body2" color="text.secondary">
-              Step 3/3 - Finalize Driver Profile
-            </Typography>
           </Box>
         );
       default:
@@ -304,9 +348,7 @@ export const CreateDriverPage = () => {
       case 1:
         return 'Basic Details & Hub';
       case 2:
-        return 'Driving Licence & Aadhaar';
-      case 3:
-        return 'Review & Submit';
+        return 'DL & Aadhaar';
       default:
         return '';
     }
@@ -336,10 +378,10 @@ export const CreateDriverPage = () => {
           <ArrowBackIosIcon sx={{ fontSize: '0.75rem' }} /> Go back
         </Link>
         <Typography variant="h4" sx={{ fontWeight: 600 }}>
-          Create Driver
+          {isEdit ? 'Edit Driver' : 'Create Driver'}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Step {step}/3 - {getStepTitle()}
+          Step {step}/2 - {getStepTitle()}
         </Typography>
       </Box>
 
@@ -360,7 +402,7 @@ export const CreateDriverPage = () => {
         <Button
           variant="outlined"
           startIcon={<ArrowBackIosIcon sx={{ fontSize: '0.75rem !important' }} />}
-          disabled={step === 1}
+          disabled={step === 1 || isPending}
           onClick={prevStep}
           sx={{
             borderRadius: '8px',
@@ -378,27 +420,24 @@ export const CreateDriverPage = () => {
           Previous
         </Button>
         <Button
-          variant="outlined"
+          variant="contained"
+          disabled={isPending}
           endIcon={
-            step < 3 ? <ArrowForwardIosIcon sx={{ fontSize: '0.75rem !important' }} /> : null
+            step < 2 ? <ArrowForwardIosIcon sx={{ fontSize: '0.75rem !important' }} /> : null
           }
-          onClick={
-            step === 3
-              ? () => {
-                  navigate(ROUTES.DRIVERS);
-                }
-              : nextStep
-          }
+          onClick={step === 2 ? handleSubmit : nextStep}
           sx={{
             borderRadius: '8px',
             textTransform: 'none',
             px: 4,
-            border: '1px solid',
-            borderColor: 'primary.main',
-            color: 'primary.main',
+            bgcolor: 'primary.main',
+            color: 'white',
+            '&:hover': {
+              bgcolor: 'primary.dark',
+            },
           }}
         >
-          {step === 3 ? 'Submit' : 'Next'}
+          {isPending ? <CircularProgress size={24} color="inherit" /> : step === 2 ? 'Submit' : 'Next'}
         </Button>
       </Box>
     </Box>

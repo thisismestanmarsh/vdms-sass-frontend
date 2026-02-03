@@ -10,7 +10,7 @@ export const ENDPOINTS = {
     PERMISSIONS: '/company/permissions',
     ROLES: '/company/roles',
     USERS: '/company/users',
-    DRIVERS: '/company/drivers',
+    DRIVERS: '/company/modules/dms/drivers',
     VEHICLES: '/company/vehicles',
   },
 } as const;

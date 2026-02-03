@@ -23,7 +23,11 @@ export const ROUTES = {
   DRIVERS: '/drivers',
   DRIVER_CREATE: '/drivers/create',
   DRIVER_EDIT: '/drivers/:id/edit',
+  DRIVER_DETAILS: '/drivers/:id',
 } as const;
+
+export const getDriverDetailsPath = (id: string | number) =>
+  ROUTES.DRIVER_DETAILS.replace(':id', id.toString());
 
 export const getHubDetailsPath = (zoneId: string | number, hubId: string | number) =>
   ROUTES.HUB_DETAILS.replace(':zoneId', zoneId.toString()).replace(':hubId', hubId.toString());
