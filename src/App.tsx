@@ -19,7 +19,18 @@ import {
 import { RolesPage, RoleDetailPage } from '@pages/roles-page';
 import { UsersPage } from '@pages/users-page';
 import { VehicleListPage, CreateVehiclePage, VehicleDetailPage } from '@pages/vehicle-page';
-import { DriversPage, CreateDriverPage, EditDriverPage, DriverDetailPage } from '@pages/driver-page';
+import {
+  DriversPage,
+  CreateDriverPage,
+  EditDriverPage,
+  DriverDetailPage,
+} from '@pages/driver-page';
+import {
+  WorkshopsPage,
+  CreateWorkshopPage,
+  EditWorkshopPage,
+  WorkshopDetailPage,
+} from '@pages/workshop-page';
 import { MainLayout } from '@app/providers/layout';
 import { ROUTES } from '@shared/config/routes';
 
@@ -60,6 +71,10 @@ function App() {
         <Route path={ROUTES.DRIVER_CREATE} element={<CreateDriverPage />} />
         <Route path={ROUTES.DRIVER_EDIT} element={<EditDriverPage />} />
         <Route path={ROUTES.DRIVER_DETAILS} element={<DriverDetailPage />} />
+        <Route path={ROUTES.WORKSHOPS} element={<WorkshopsPage />} />
+        <Route path={ROUTES.WORKSHOP_CREATE} element={<CreateWorkshopPage />} />
+        <Route path={ROUTES.WORKSHOP_EDIT} element={<EditWorkshopPage />} />
+        <Route path={ROUTES.WORKSHOP_DETAILS} element={<WorkshopDetailPage />} />
       </Route>
 
       <Route path="/" element={<Navigate to={authData ? ROUTES.HOME : ROUTES.LOGIN} replace />} />

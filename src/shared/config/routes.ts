@@ -24,6 +24,10 @@ export const ROUTES = {
   DRIVER_CREATE: '/drivers/create',
   DRIVER_EDIT: '/drivers/:id/edit',
   DRIVER_DETAILS: '/drivers/:id',
+  WORKSHOPS: '/workshops',
+  WORKSHOP_CREATE: '/workshops/create',
+  WORKSHOP_EDIT: '/workshops/:id/edit',
+  WORKSHOP_DETAILS: '/workshops/:id',
 } as const;
 
 export const getDriverDetailsPath = (id: string | number) =>
@@ -47,5 +51,11 @@ export const getRoleDetailsPath = (id: string | number) =>
   ROUTES.ROLE_DETAILS.replace(':id', id.toString());
 export const getVehicleDetailsPath = (id: string | number) =>
   ROUTES.VEHICLE_DETAILS.replace(':id', id.toString());
+
+export const getWorkshopDetailsPath = (id: string | number) =>
+  ROUTES.WORKSHOP_DETAILS.replace(':id', id.toString());
+
+export const getWorkshopEditPath = (id: string | number) =>
+  ROUTES.WORKSHOP_EDIT.replace(':id', id.toString());
 
 export const getHubsTabPath = (tab: 'hubs' | 'zones' = 'hubs') => `${ROUTES.HUBS}?tab=${tab}`;

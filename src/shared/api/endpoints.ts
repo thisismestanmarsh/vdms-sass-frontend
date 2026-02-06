@@ -12,5 +12,6 @@ export const ENDPOINTS = {
     USERS: '/company/users',
     DRIVERS: '/company/modules/dms/drivers',
     VEHICLES: '/company/vehicles',
+    WORKSHOPS: '/company/workshops',
   },
 } as const;
