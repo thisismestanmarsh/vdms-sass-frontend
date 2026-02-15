@@ -28,6 +28,10 @@ export const ROUTES = {
   WORKSHOP_CREATE: '/workshops/create',
   WORKSHOP_EDIT: '/workshops/:id/edit',
   WORKSHOP_DETAILS: '/workshops/:id',
+  ISSUES: '/issues',
+  ISSUE_CREATE: '/issues/create',
+  ISSUE_EDIT: '/issues/:id/edit',
+  ISSUE_DETAILS: '/issues/:id',
 } as const;
 
 export const getDriverDetailsPath = (id: string | number) =>
@@ -57,5 +61,11 @@ export const getWorkshopDetailsPath = (id: string | number) =>
 
 export const getWorkshopEditPath = (id: string | number) =>
   ROUTES.WORKSHOP_EDIT.replace(':id', id.toString());
+
+export const getIssueDetailsPath = (id: string | number) =>
+  ROUTES.ISSUE_DETAILS.replace(':id', id.toString());
+
+export const getIssueEditPath = (id: string | number) =>
+  ROUTES.ISSUE_EDIT.replace(':id', id.toString());
 
 export const getHubsTabPath = (tab: 'hubs' | 'zones' = 'hubs') => `${ROUTES.HUBS}?tab=${tab}`;

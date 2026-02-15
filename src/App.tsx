@@ -31,6 +31,7 @@ import {
   EditWorkshopPage,
   WorkshopDetailPage,
 } from '@pages/workshop-page';
+import { IssuesPage, CreateIssuePage } from '@pages/issues-page';
 import { MainLayout } from '@app/providers/layout';
 import { ROUTES } from '@shared/config/routes';
 
@@ -75,6 +76,9 @@ function App() {
         <Route path={ROUTES.WORKSHOP_CREATE} element={<CreateWorkshopPage />} />
         <Route path={ROUTES.WORKSHOP_EDIT} element={<EditWorkshopPage />} />
         <Route path={ROUTES.WORKSHOP_DETAILS} element={<WorkshopDetailPage />} />
+        <Route path={ROUTES.ISSUES} element={<IssuesPage />} />
+        <Route path={ROUTES.ISSUE_CREATE} element={<CreateIssuePage />} />
+        <Route path={ROUTES.ISSUE_EDIT} element={<CreateIssuePage />} />
       </Route>
 
       <Route path="/" element={<Navigate to={authData ? ROUTES.HOME : ROUTES.LOGIN} replace />} />

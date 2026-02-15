@@ -19,6 +19,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import PeopleIcon from '@mui/icons-material/People';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import BuildIcon from '@mui/icons-material/Build';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ROUTES } from '@shared/config/routes';
 import { useState, useEffect } from 'react';
@@ -91,6 +92,7 @@ export const Sidebar = ({ isOpen }: SidebarProps) => {
             { text: 'Vehicles', icon: <DirectionsCarIcon />, path: ROUTES.VEHICLES },
             { text: 'Drivers', icon: <PeopleIcon />, path: ROUTES.DRIVERS },
             { text: 'Workshops', icon: <BuildIcon />, path: ROUTES.WORKSHOPS },
+            { text: 'Issues', icon: <ReportProblemIcon />, path: ROUTES.ISSUES },
             { text: 'Profile', icon: <PersonIcon />, path: ROUTES.PROFILE },
           ].map((item) => {
             const active = isSelected(item.path);

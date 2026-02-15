@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import toast from 'react-hot-toast';
 import { useUserStore } from '@entities/user/model/userStore';
 
 const apiClient: AxiosInstance = axios.create({
@@ -29,11 +30,22 @@ apiClient.interceptors.request.use(
 
 // Response Interceptor
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const { method } = response.config;
+    if (method && ['post', 'put', 'delete'].includes(method.toLowerCase())) {
+      const message = response.data?.message || 'Successful :)';
+      toast.success(message);
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       useUserStore.getState().logout();
     }
+
+    const message = error.response?.data?.message || error.message || 'Something went wrong :(';
+    toast.error(message);
+
     return Promise.reject(error);
   }
 );
