@@ -1,0 +1,36 @@
+import type { Workshop } from '@entities/workshop/model/types';
+
+export const MOCK_WORKSHOPS: Workshop[] = [
+  {
+    id: 'w1',
+    workshop_id: 'W001',
+    workshop_name: 'FastFix Auto',
+    address: '101 Service Rd, Mumbai',
+    maps_link: 'https://maps.google.com',
+    primary_phone: '9876500001',
+    status: 'Active',
+    type: 'Service',
+    zone_id: 'z1',
+    company_id: 'c1',
+    created_at: '2023-01-01',
+    updated_at: '2023-01-01',
+    created_by: 'admin',
+    updated_by: 'admin',
+  },
+  {
+    id: 'w2',
+    workshop_id: 'W002',
+    workshop_name: 'Elite Dealer',
+    address: '202 Dealer Ave, Pune',
+    maps_link: 'https://maps.google.com',
+    primary_phone: '9876500002',
+    status: 'Active',
+    type: 'Dealer',
+    zone_id: 'z1',
+    company_id: 'c1',
+    created_at: '2023-01-01',
+    updated_at: '2023-01-01',
+    created_by: 'admin',
+    updated_by: 'admin',
+  },
+];

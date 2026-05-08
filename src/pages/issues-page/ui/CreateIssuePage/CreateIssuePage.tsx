@@ -25,11 +25,15 @@ const LANGUAGES = [
     { code: 'hi', label: 'Hindi' },
     { code: 'ar', label: 'Arabic' },
     { code: 'fr', label: 'French' },
+    { code: 'es', label: 'Spanish' },
+    { code: 'de', label: 'German' },
+    { code: 'zh', label: 'Chinese' },
+    { code: 'ja', label: 'Japanese' },
 ];
 
-const VEHICLE_TYPES = ['EV', 'CNG', 'Petrol', 'Diesel'];
-const SEGMENTS = ['EV', 'PV', '3W', '4W'];
-const COLORS = ['#ff6b00', '#00c853', '#6200ea', '#d32f2f', '#1976d2'];
+const VEHICLE_TYPES = ['EV', 'CNG', 'Petrol', 'Diesel', 'Hybrid', 'Hydrogen'];
+const SEGMENTS = ['EV', 'PV', '3W', '4W', 'L5', 'N1', 'M1'];
+const COLORS = ['#ff6b00', '#00c853', '#6200ea', '#d32f2f', '#1976d2', '#e91e63', '#9c27b0', '#00bcd4'];
 
 export const CreateIssuePage = () => {
     const navigate = useNavigate();

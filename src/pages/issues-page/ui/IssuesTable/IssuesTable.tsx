@@ -16,11 +16,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { getIssueEditPath } from '@shared/config/routes';
 import { useIssues, useDeleteIssue } from '@entities/issue/model/issueHooks';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_ISSUES } from './demoData';
 
 export const IssuesTable = () => {
     const navigate = useNavigate();
-    const { data: issues, isLoading } = useIssues();
+    const { data: apiIssues, isLoading: apiLoading } = useIssues();
     const { mutate: deleteIssue } = useDeleteIssue();
+
+    const issues = IS_DEMO_MODE ? MOCK_ISSUES : apiIssues;
+    const isLoading = IS_DEMO_MODE ? false : apiLoading;
 
     const handleDelete = (id: string) => {
         if (window.confirm('Are you sure you want to delete this issue?')) {

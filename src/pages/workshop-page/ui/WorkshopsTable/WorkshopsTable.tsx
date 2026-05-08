@@ -24,6 +24,8 @@ import { useNavigate } from 'react-router-dom';
 import { getWorkshopDetailsPath, getWorkshopEditPath } from '@shared/config/routes';
 import { useWorkshops, useDeleteWorkshop } from '@entities/workshop/api/workshopApi';
 import { useState } from 'react';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_WORKSHOPS } from './demoData';
 
 const getStatusColor = (status: string) => {
   if (!status) return 'default';
@@ -39,9 +41,13 @@ const getStatusColor = (status: string) => {
 
 export const WorkshopsTable = () => {
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useWorkshops();
+  const { data: apiData, isLoading: apiLoading, isError: apiError } = useWorkshops();
   const deleteWorkshop = useDeleteWorkshop();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const data = IS_DEMO_MODE ? { data: MOCK_WORKSHOPS } : apiData;
+  const isLoading = IS_DEMO_MODE ? false : apiLoading;
+  const isError = IS_DEMO_MODE ? false : apiError;
 
   if (isLoading) {
     return (

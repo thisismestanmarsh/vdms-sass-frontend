@@ -26,11 +26,17 @@ import { getPermissionDetailsPath, getPermissionEditPath } from '@shared/config/
 import { usePermissions, useDeletePermission } from '@entities/permission/model/permissionHooks';
 import { useState } from 'react';
 import type { Permission } from '@entities/permission/model/types';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_PERMISSIONS } from './demoData';
 
 export const PermissionsTable = () => {
   const navigate = useNavigate();
-  const { data, isLoading, error } = usePermissions();
+  const { data: apiData, isLoading: apiLoading, error: apiError } = usePermissions();
   const deletePermission = useDeletePermission();
+
+  const data = IS_DEMO_MODE ? { data: MOCK_PERMISSIONS } : apiData;
+  const isLoading = IS_DEMO_MODE ? false : apiLoading;
+  const error = IS_DEMO_MODE ? null : apiError;
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [permissionToDelete, setPermissionToDelete] = useState<number | null>(null);
 

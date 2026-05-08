@@ -18,12 +18,18 @@ import { useNavigate } from 'react-router-dom';
 import { getHubDetailsPath } from '@shared/config/routes';
 import { useFlattenedZones } from '@entities/zone/model/zoneHooks';
 import CircularProgress from '@mui/material/CircularProgress';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_FLATTENED_HUBS } from './demoData';
 
 export const HubsTable = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const limit = 10;
-  const { data: response, isLoading, error } = useFlattenedZones({ page, limit });
+  const { data: apiResponse, isLoading: apiLoading, error: apiError } = useFlattenedZones({ page, limit });
+
+  const response = IS_DEMO_MODE ? { data: MOCK_FLATTENED_HUBS, meta: { total_pages: 1 } } : apiResponse;
+  const isLoading = IS_DEMO_MODE ? false : apiLoading;
+  const error = IS_DEMO_MODE ? null : apiError;
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);

@@ -43,6 +43,9 @@ export const Step1BasicInfo = ({ control, engineType }: Step1BasicInfoProps) => 
                                 <MenuItem value="2W">2 Wheeler</MenuItem>
                                 <MenuItem value="3W">3 Wheeler</MenuItem>
                                 <MenuItem value="4W">4 Wheeler</MenuItem>
+                                <MenuItem value="HCV">Heavy Commercial Vehicle</MenuItem>
+                                <MenuItem value="LCV">Light Commercial Vehicle</MenuItem>
+                                <MenuItem value="Bus">Bus</MenuItem>
                             </TextField>
                         )}
                     />
@@ -72,6 +75,9 @@ export const Step1BasicInfo = ({ control, engineType }: Step1BasicInfoProps) => 
                                 <MenuItem value="EV">Electric</MenuItem>
                                 <MenuItem value="Petrol">Petrol</MenuItem>
                                 <MenuItem value="Diesel">Diesel</MenuItem>
+                                <MenuItem value="CNG">CNG</MenuItem>
+                                <MenuItem value="Hybrid">Hybrid</MenuItem>
+                                <MenuItem value="Hydrogen">Hydrogen</MenuItem>
                             </TextField>
                         )}
                     />

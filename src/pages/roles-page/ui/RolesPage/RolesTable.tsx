@@ -18,11 +18,17 @@ import { useNavigate } from 'react-router-dom';
 import { getRoleDetailsPath } from '@shared/config/routes';
 import { useRoles, useDeleteRole } from '@entities/role/model/roleHooks';
 import type { Role } from '@entities/role/model/types';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_ROLES } from './demoData';
 
 export const RolesTable = () => {
   const navigate = useNavigate();
-  const { data, isLoading, error } = useRoles();
+  const { data: apiData, isLoading: apiLoading, error: apiError } = useRoles();
   const deleteRole = useDeleteRole();
+
+  const data = IS_DEMO_MODE ? { data: MOCK_ROLES } : apiData;
+  const isLoading = IS_DEMO_MODE ? false : apiLoading;
+  const error = IS_DEMO_MODE ? null : apiError;
 
   if (isLoading) {
     return (

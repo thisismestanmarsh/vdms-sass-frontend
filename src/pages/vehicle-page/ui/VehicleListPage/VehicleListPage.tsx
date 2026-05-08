@@ -23,6 +23,8 @@ import { ROUTES, getVehicleDetailsPath } from '@shared/config/routes';
 import { useVehicles, useDeleteVehicle } from '@entities/vehicle/model/vehicleHooks';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_VEHICLES } from './demoData';
 import {
   Dialog,
   DialogTitle,
@@ -33,7 +35,11 @@ import {
 
 export const VehicleListPage = () => {
   const navigate = useNavigate();
-  const { data, isLoading, error } = useVehicles(1, 50);
+  const { data: apiData, isLoading: apiLoading, error: apiError } = useVehicles(1, 50);
+
+  const data = IS_DEMO_MODE ? { data: MOCK_VEHICLES } : apiData;
+  const isLoading = IS_DEMO_MODE ? false : apiLoading;
+  const error = IS_DEMO_MODE ? null : apiError;
   const deleteVehicleMutation = useDeleteVehicle();
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [vehicleToDelete, setVehicleToDelete] = useState<string | number | null>(null);

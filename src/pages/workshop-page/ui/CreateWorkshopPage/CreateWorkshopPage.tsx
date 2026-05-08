@@ -139,6 +139,9 @@ export const CreateWorkshopPage = ({ initialData, isEdit }: CreateWorkshopPagePr
             >
               <MenuItem value="Service">Service</MenuItem>
               <MenuItem value="Dealer">Dealer</MenuItem>
+              <MenuItem value="Independent">Independent</MenuItem>
+              <MenuItem value="Mobile">Mobile Service</MenuItem>
+              <MenuItem value="Body Shop">Body Shop</MenuItem>
             </TextField>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -154,6 +157,9 @@ export const CreateWorkshopPage = ({ initialData, isEdit }: CreateWorkshopPagePr
             >
               <MenuItem value="Active">Active</MenuItem>
               <MenuItem value="Inactive">Inactive</MenuItem>
+              <MenuItem value="Under Maintenance">Under Maintenance</MenuItem>
+              <MenuItem value="Closed">Closed</MenuItem>
+              <MenuItem value="Pending Approval">Pending Approval</MenuItem>
             </TextField>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>

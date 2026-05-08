@@ -24,6 +24,8 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES, getDriverDetailsPath } from '@shared/config/routes';
 import { useDrivers, useDeleteDriver } from '@entities/driver/model/driverHooks';
 import { useState } from 'react';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_DRIVERS } from './demoData';
 
 const getStatusColor = (status: string) => {
   if (!status) return 'default';
@@ -45,9 +47,13 @@ const getStatusColor = (status: string) => {
 
 export const DriversTable = () => {
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useDrivers();
+  const { data: apiData, isLoading: apiLoading, isError: apiError } = useDrivers();
   const deleteDriver = useDeleteDriver();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const data = IS_DEMO_MODE ? { data: MOCK_DRIVERS } : apiData;
+  const isLoading = IS_DEMO_MODE ? false : apiLoading;
+  const isError = IS_DEMO_MODE ? false : apiError;
 
   if (isLoading) {
     return (

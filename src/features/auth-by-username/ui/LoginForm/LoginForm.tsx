@@ -5,12 +5,13 @@ import { useUserStore } from '@entities/user/model/userStore';
 import { api } from '@shared/api/apiClient';
 import { ENDPOINTS } from '@shared/api/endpoints';
 import type { AuthResponse } from '@entities/user/model/userStore';
+import { IS_DEMO_MODE } from '@shared/config/demo';
 
 const TENANT_ID = '6950082673f5d92631bf6132';
 
 export const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState(IS_DEMO_MODE ? 'aultrix@gmail.com' : '');
+    const [password, setPassword] = useState(IS_DEMO_MODE ? '12345' : '');
     const setAuthData = useUserStore((state) => state.setAuthData);
 
     const { mutate: login, isPending, error } = useMutation({
@@ -23,6 +24,24 @@ export const LoginForm = () => {
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
         if (email && password) {
+            if (IS_DEMO_MODE) {
+                const dummyAuthData: AuthResponse = {
+                    access_token: 'dummy_token',
+                    refresh_token: 'dummy_refresh_token',
+                    expires_at: new Date(Date.now() + 3600000).toISOString(),
+                    user: {
+                        id: 'demo-user-id',
+                        name: 'Aultix',
+                        email: email,
+                        role: 'ADMIN',
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                        status: 'ACTIVE'
+                    } as any
+                };
+                setAuthData(dummyAuthData);
+                return;
+            }
             login({
                 email,
                 password,

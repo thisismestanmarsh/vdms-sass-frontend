@@ -25,6 +25,8 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { useUsers, useDeleteUser } from '@entities/user/api/userHooks';
 import { useState } from 'react';
 import type { User } from '@entities/user/model/types';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_USERS } from './demoData';
 
 interface UsersTableProps {
   onEdit: (id: string | number) => void;
@@ -35,7 +37,11 @@ export const UsersTable = ({ onEdit }: UsersTableProps) => {
   const limit = 10;
   const offset = (page - 1) * limit;
 
-  const { data, isLoading, error } = useUsers({ limit, offset });
+  const { data: apiData, isLoading: apiLoading, error: apiError } = useUsers({ limit, offset });
+
+  const data = IS_DEMO_MODE ? { data: MOCK_USERS, meta: { total_pages: 1 } } : apiData;
+  const isLoading = IS_DEMO_MODE ? false : apiLoading;
+  const error = IS_DEMO_MODE ? null : apiError;
   const deleteUserMutation = useDeleteUser();
 
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);

@@ -15,6 +15,8 @@ import { getHubDetailsPath, getHubsTabPath } from '@shared/config/routes';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CheckIcon from '@mui/icons-material/Check';
 import { useHub, useZones, useCreateHub, useUpdateHub } from '@entities/zone/model/zoneHooks';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_ZONES_DROPDOWN } from './demoData';
 
 export const CreateHubPage = () => {
   const { zoneId: urlZoneId, hubId } = useParams();
@@ -26,8 +28,8 @@ export const CreateHubPage = () => {
   // If coming from ZoneDetailPage, we might have zoneId in query or params
   const initialZoneId = urlZoneId || searchParams.get('zoneId') || '';
 
-  const { data: zonesData } = useZones();
-  const zones = zonesData?.data || [];
+  const { data: apiZonesData } = useZones();
+  const zones = IS_DEMO_MODE ? MOCK_ZONES_DROPDOWN : (apiZonesData?.data || []);
 
   const { data: hubData, isLoading: isHubLoading } = useHub(urlZoneId || '', hubId || '');
 

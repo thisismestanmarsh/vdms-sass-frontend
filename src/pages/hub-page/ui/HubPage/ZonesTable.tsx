@@ -18,10 +18,16 @@ import { getZoneDetailsPath } from '@shared/config/routes';
 import { useZones } from '@entities/zone/model/zoneHooks';
 import type { Zone } from '@entities/zone/model/types';
 import CircularProgress from '@mui/material/CircularProgress';
+import { IS_DEMO_MODE } from '@shared/config/demo';
+import { MOCK_ZONES } from './demoData';
 
 export const ZonesTable = () => {
   const navigate = useNavigate();
-  const { data: zones, isLoading, error } = useZones();
+  const { data: apiZones, isLoading: apiLoading, error: apiError } = useZones();
+
+  const zones = IS_DEMO_MODE ? { data: MOCK_ZONES } : apiZones;
+  const isLoading = IS_DEMO_MODE ? false : apiLoading;
+  const error = IS_DEMO_MODE ? null : apiError;
 
   if (isLoading) {
     return (

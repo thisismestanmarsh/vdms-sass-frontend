@@ -198,6 +198,11 @@ export const CreateDriverPage = ({ initialData, isEdit }: CreateDriverPageProps)
                 <MenuItem value="Bangalore">Bangalore</MenuItem>
                 <MenuItem value="Delhi">Delhi</MenuItem>
                 <MenuItem value="Gurugram">Gurugram</MenuItem>
+                <MenuItem value="Mumbai">Mumbai</MenuItem>
+                <MenuItem value="Pune">Pune</MenuItem>
+                <MenuItem value="Hyderabad">Hyderabad</MenuItem>
+                <MenuItem value="Chennai">Chennai</MenuItem>
+                <MenuItem value="Kolkata">Kolkata</MenuItem>
               </TextField>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -213,7 +218,11 @@ export const CreateDriverPage = ({ initialData, isEdit }: CreateDriverPageProps)
                   const hubId = e.target.value;
                   const hubs: Record<string, string> = {
                     'HUB-DEL-01': 'Delhi Hub 1',
-                    'HUB-BLR-01': 'Bangalore Hub 1'
+                    'HUB-DEL-02': 'Delhi Hub 2',
+                    'HUB-BLR-01': 'Bangalore Hub 1',
+                    'HUB-BLR-02': 'Bangalore Hub 2',
+                    'HUB-MUM-01': 'Mumbai Hub 1',
+                    'HUB-PUN-01': 'Pune Hub 1'
                   };
                   setFormData(prev => ({ ...prev, hub_id: hubId, hub_name: hubs[hubId] || '' }));
                 }}
@@ -223,7 +232,11 @@ export const CreateDriverPage = ({ initialData, isEdit }: CreateDriverPageProps)
                   Select Hub
                 </MenuItem>
                 <MenuItem value="HUB-DEL-01">Delhi Hub 1</MenuItem>
+                <MenuItem value="HUB-DEL-02">Delhi Hub 2</MenuItem>
                 <MenuItem value="HUB-BLR-01">Bangalore Hub 1</MenuItem>
+                <MenuItem value="HUB-BLR-02">Bangalore Hub 2</MenuItem>
+                <MenuItem value="HUB-MUM-01">Mumbai Hub 1</MenuItem>
+                <MenuItem value="HUB-PUN-01">Pune Hub 1</MenuItem>
               </TextField>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>

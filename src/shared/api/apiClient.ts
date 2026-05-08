@@ -2,6 +2,7 @@ import axios from 'axios';
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import toast from 'react-hot-toast';
 import { useUserStore } from '@entities/user/model/userStore';
+import { IS_DEMO_MODE } from '@shared/config/demo';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/',
@@ -39,6 +40,8 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (IS_DEMO_MODE) return Promise.reject(error);
+
     if (error.response?.status === 401) {
       useUserStore.getState().logout();
     }

@@ -161,6 +161,10 @@ export const CreateZonePage = () => {
                 Select country
               </MenuItem>
               <MenuItem value="India">India</MenuItem>
+              <MenuItem value="UAE">UAE</MenuItem>
+              <MenuItem value="Singapore">Singapore</MenuItem>
+              <MenuItem value="USA">USA</MenuItem>
+              <MenuItem value="UK">UK</MenuItem>
             </TextField>
           </Grid>
 
