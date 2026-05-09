@@ -4,6 +4,7 @@ import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/vdms-sass-frontend/',
   plugins: [react()],
   resolve: {
     alias: {

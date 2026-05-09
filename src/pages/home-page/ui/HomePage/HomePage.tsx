@@ -1,4 +1,4 @@
-import { Container, Typography, Box, Grid, Card, CardContent, Avatar, useTheme, alpha, Chip } from '@mui/material';
+import { Container, Typography, Box, Grid, Card, CardContent, Avatar, useTheme, alpha } from '@mui/material';
 import { cloneElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '@entities/user/model/userStore';
@@ -8,7 +8,7 @@ import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import HubIcon from '@mui/icons-material/Hub';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import AssignmentIcon from '@mui/icons-material/Assignment';
+// import AssignmentIcon from '@mui/icons-material/Assignment';
 import SpeedIcon from '@mui/icons-material/Speed';
 import GavelIcon from '@mui/icons-material/Gavel';
 
@@ -70,7 +70,7 @@ export const HomePage = () => {
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, idx) => (
-          <Grid item xs={12} sm={6} md={3} key={idx}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={idx}>
             <Card sx={{
               height: 180,
               width: 200,
@@ -94,7 +94,7 @@ export const HomePage = () => {
                     color: stat.color,
                     borderRadius: 1.5
                   }}>
-                    {cloneElement(stat.icon as React.ReactElement, { sx: { fontSize: 20 } })}
+                    {cloneElement(stat.icon as React.ReactElement<any>, { sx: { fontSize: 20 } })}
                   </Avatar>
                   <Typography variant="caption" sx={{
                     color: stat.trend.startsWith('+') ? 'success.main' : 'error.main',
@@ -125,7 +125,7 @@ export const HomePage = () => {
 
       <Grid container spacing={3}>
         {quickActions.map((action, idx) => (
-          <Grid item xs={12} sm={6} md={2.4} key={idx}>
+          <Grid size={{ xs: 12, sm: 6, md: 2.4 }} key={idx}>
             <Card variant="outlined" sx={{
               height: 180,
               width: 200,
