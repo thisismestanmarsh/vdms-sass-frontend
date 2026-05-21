@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import '@shared/config/i18n/i18n';
 import { ThemeProvider } from '@app/providers/theme-provider';
@@ -9,7 +9,7 @@ import App from './App.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <QueryProvider>
         <ThemeProvider>
           <Toaster
@@ -25,6 +25,6 @@ createRoot(document.getElementById('root')!).render(
           <App />
         </ThemeProvider>
       </QueryProvider>
-    </BrowserRouter>
+    </HashRouter>
   </StrictMode>
 );
