@@ -32,6 +32,8 @@ export const ROUTES = {
   ISSUE_CREATE: '/issues/create',
   ISSUE_EDIT: '/issues/:id/edit',
   ISSUE_DETAILS: '/issues/:id',
+  CHALLANS: '/challans',
+  CHALLAN_DETAILS: '/challans/:id',
 } as const;
 
 export const getDriverDetailsPath = (id: string | number) =>
@@ -69,3 +71,6 @@ export const getIssueEditPath = (id: string | number) =>
   ROUTES.ISSUE_EDIT.replace(':id', id.toString());
 
 export const getHubsTabPath = (tab: 'hubs' | 'zones' = 'hubs') => `${ROUTES.HUBS}?tab=${tab}`;
+
+export const getChallanDetailsPath = (id: string | number) =>
+  ROUTES.CHALLAN_DETAILS.replace(':id', id.toString());

@@ -32,6 +32,7 @@ import {
   WorkshopDetailPage,
 } from '@pages/workshop-page';
 import { IssuesPage, CreateIssuePage } from '@pages/issues-page';
+import { ChallansPage, ChallanDetailPage } from '@pages/challan-page';
 import { MainLayout } from '@app/providers/layout';
 import { ROUTES } from '@shared/config/routes';
 
@@ -79,6 +80,8 @@ function App() {
         <Route path={ROUTES.ISSUES} element={<IssuesPage />} />
         <Route path={ROUTES.ISSUE_CREATE} element={<CreateIssuePage />} />
         <Route path={ROUTES.ISSUE_EDIT} element={<CreateIssuePage />} />
+        <Route path={ROUTES.CHALLANS} element={<ChallansPage />} />
+        <Route path={ROUTES.CHALLAN_DETAILS} element={<ChallanDetailPage />} />
       </Route>
 
       <Route path="/" element={<Navigate to={authData ? ROUTES.HOME : ROUTES.LOGIN} replace />} />
